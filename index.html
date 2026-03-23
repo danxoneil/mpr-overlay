@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MPR Infrastructure Site Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a1a1a;--ink2:#555;--ink3:#888;
+  --paper:#f7f5f0;--paper2:#edeae3;--paper3:#e2dfd7;
+  --blue:#185FA5;--blue-light:#E6F1FB;--blue-dark:#0C447C;
+  --green:#3B6D11;--amber:#BA7517;--purple:#533AB7;
+  --red:#A32D2D;--border:1px solid #d0cdc5;
+  --radius:6px;--mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
+}
+html,body{height:100%;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px}
+header{background:var(--ink);padding:14px 24px;display:flex;align-items:baseline;gap:16px}
+header h1{font-family:var(--mono);font-size:15px;font-weight:600;color:#fff;letter-spacing:.04em}
+header p{font-family:var(--mono);font-size:11px;color:#888}
+.app{display:grid;grid-template-columns:290px 1fr;height:calc(100vh - 49px);overflow:hidden}
+.sidebar{background:var(--paper2);border-right:var(--border);display:flex;flex-direction:column;overflow:hidden}
+.buffer-ctrl{padding:12px 16px;border-bottom:var(--border);background:var(--paper3)}
+.buffer-ctrl label{font-size:11px;font-weight:600;color:var(--ink2);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:6px;font-family:var(--mono)}
+.buffer-row{display:flex;align-items:center;gap:8px}
+.buffer-row input[type=range]{flex:1;accent-color:var(--blue)}
+.buffer-val{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--blue);min-width:45px;text-align:right}
+.sites-list{flex:1;overflow-y:auto;padding:8px}
+.region-group{margin-bottom:4px}
+.region-label{font-size:10px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;padding:6px 8px 3px;font-family:var(--mono)}
+.site-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:var(--radius);cursor:pointer;transition:background .15s}
+.site-item:hover{background:var(--paper3)}
+.site-item.checked{background:var(--blue-light)}
+.site-item input[type=checkbox]{accent-color:var(--blue);width:13px;height:13px;flex-shrink:0;cursor:pointer}
+.site-name{font-size:12px;font-weight:500;color:var(--ink);line-height:1.3}
+.site-call{font-family:var(--mono);font-size:10px;color:var(--ink3)}
+.svc-dots{display:flex;gap:3px;margin-left:auto;flex-shrink:0}
+.svc-dot{width:6px;height:6px;border-radius:50%}
+.select-actions{padding:10px 16px;border-top:var(--border);display:flex;gap:6px}
+.btn-sm{flex:1;padding:7px 8px;border-radius:var(--radius);border:var(--border);background:var(--paper);font-size:11px;font-weight:500;cursor:pointer;font-family:var(--mono);color:var(--ink2);transition:background .15s}
+.btn-sm:hover{background:var(--paper3)}
+.btn-run{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn-run:hover{background:var(--blue-dark)}
+.main{display:flex;flex-direction:column;overflow:hidden}
+.tabs{display:flex;border-bottom:var(--border);background:var(--paper2);flex-shrink:0}
+.tab{padding:11px 20px;font-size:12px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;color:var(--ink3);font-family:var(--mono);transition:all .15s}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue);background:var(--paper)}
+.panel{display:none;flex:1;overflow:auto;flex-direction:column}
+.panel.active{display:flex}
+.map-container{position:relative;flex:1}
+.map-container svg{width:100%;height:100%;display:block}
+.map-tip{position:absolute;background:var(--paper);border:var(--border);border-radius:var(--radius);padding:8px 11px;font-size:11px;pointer-events:none;display:none;z-index:20;max-width:210px;box-shadow:0 2px 8px rgba(0,0,0,.12);line-height:1.6}
+.map-tip strong{display:block;font-size:12px;margin-bottom:3px;font-family:var(--mono)}
+.map-legend{display:flex;align-items:center;gap:8px;padding:8px 14px;border-top:var(--border);background:var(--paper2);flex-wrap:wrap;flex-shrink:0}
+.legend-label{font-size:10px;color:var(--ink3);font-family:var(--mono)}
+.legend-bar{display:flex;height:10px;border-radius:3px;overflow:hidden;width:120px}
+.legend-seg{flex:1}
+.legend-ends{display:flex;justify-content:space-between;width:120px;font-size:9px;color:var(--ink3);font-family:var(--mono);margin-top:2px}
+.data-panel{padding:20px;flex:1}
+.data-panel h3{font-size:12px;font-weight:600;font-family:var(--mono);color:var(--ink2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:14px}
+.summary-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:18px}
+.scard{background:var(--paper2);border:var(--border);border-radius:var(--radius);padding:12px 14px}
+.scard-n{font-size:22px;font-weight:600;color:var(--ink);font-family:var(--mono)}
+.scard-l{font-size:10px;color:var(--ink3);margin-top:3px;text-transform:uppercase;letter-spacing:.04em}
+.data-table{width:100%;border-collapse:collapse;font-size:12px}
+.data-table th{text-align:left;font-weight:600;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3);padding:7px 10px;border-bottom:2px solid var(--paper3);background:var(--paper);position:sticky;top:0}
+.data-table td{padding:8px 10px;border-bottom:var(--border);vertical-align:middle}
+.data-table tr:hover td{background:var(--blue-light)}
+.income-bar-wrap{width:80px;height:6px;background:var(--paper3);border-radius:3px;overflow:hidden;display:inline-block}
+.income-bar{height:100%;border-radius:3px;background:var(--blue)}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--ink3);gap:10px;font-family:var(--mono);font-size:12px}
+.empty-icon{font-size:36px;opacity:.3}
+.loading-state{display:flex;align-items:center;justify-content:center;height:100%;gap:10px;font-family:var(--mono);font-size:12px;color:var(--ink3)}
+.spinner{width:16px;height:16px;border:2px solid var(--paper3);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.error-box{background:#fcebeb;border:1px solid #f09595;border-radius:var(--radius);padding:14px 16px;font-size:12px;color:var(--red);font-family:var(--mono);line-height:1.6}
+.copy-btn{padding:5px 12px;border-radius:var(--radius);border:var(--border);background:var(--paper);font-size:11px;cursor:pointer;font-family:var(--mono);color:var(--ink2);float:right}
+.copy-btn:hover{background:var(--paper3)}
+.site-count{font-size:10px;font-family:var(--mono);color:var(--ink3);padding:5px 16px;border-bottom:var(--border);background:var(--paper2)}
+@media(max-width:700px){
+  .app{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  .sidebar{max-height:40vh}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>MPR Infrastructure Site Analysis</h1>
+  <p>Census ACS 2022 · Median household income by county · FY2027 Congressionally Directed Funding</p>
+</header>
+<div class="app">
+  <div class="sidebar">
+    <div class="buffer-ctrl">
+      <label>Coverage buffer radius</label>
+      <div class="buffer-row">
+        <input type="range" id="bufferRange" min="10" max="75" value="30" step="5">
+        <span class="buffer-val" id="bufferVal">30 mi</span>
+      </div>
+    </div>
+    <div class="site-count" id="siteCount">0 sites selected</div>
+    <div class="sites-list" id="sitesList"></div>
+    <div class="select-actions">
+      <button class="btn-sm" onclick="selectAll()">All</button>
+      <button class="btn-sm" onclick="clearAll()">Clear</button>
+      <button class="btn-sm btn-run" onclick="runAnalysis()">Analyze ↗</button>
+    </div>
+  </div>
+  <div class="main">
+    <div class="tabs">
+      <div class="tab active" onclick="showTab('map')">Map view</div>
+      <div class="tab" onclick="showTab('data')">Data table</div>
+    </div>
+    <div class="panel active" id="panel-map">
+      <div class="map-container" id="mapContainer">
+        <div class="empty-state" id="mapEmpty">
+          <div class="empty-icon">◎</div>
+          <div>Select sites and click Analyze</div>
+        </div>
+        <svg id="mapSvg" style="display:none"></svg>
+        <div class="map-tip" id="mapTip"></div>
+      </div>
+      <div class="map-legend" id="mapLegend" style="display:none">
+        <span class="legend-label">Median HH income:</span>
+        <div>
+          <div class="legend-bar" id="legendBar"></div>
+          <div class="legend-ends"><span id="legendLow"></span><span id="legendHigh"></span></div>
+        </div>
+        <span style="margin-left:8px;font-size:10px;color:var(--ink3);font-family:var(--mono)">● station site &nbsp; ◌ coverage buffer</span>
+      </div>
+    </div>
+    <div class="panel" id="panel-data">
+      <div class="data-panel" id="dataContent">
+        <div class="empty-state"><div class="empty-icon">▦</div><div>Run analysis to see tract data</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const CENSUS_KEY = 'DEMO_KEY';
+
+const SITES = [
+  {id:'tcmsp',city:'Minneapolis/St. Paul',region:'Twin Cities',lat:44.9778,lon:-93.2650,calls:['KNOW','KSJN','KCMP'],svcs:['N','C','T'],flagship:true},
+  {id:'duluth',city:'Duluth/Superior',region:'Northeast MN',lat:46.7833,lon:-92.1066,calls:['WSCN','WSCD','KZIO'],svcs:['N','C','T']},
+  {id:'rochester',city:'Rochester',region:'Southeast MN',lat:44.0121,lon:-92.4802,calls:['KZSE','KLSE','KMSE'],svcs:['N','C','T']},
+  {id:'stcloud',city:'St. Cloud',region:'Central MN',lat:45.5579,lon:-94.1632,calls:['KNSR','KSJR'],svcs:['N','C']},
+  {id:'mankato',city:'Mankato/St. Peter',region:'South MN',lat:44.1636,lon:-93.9994,calls:['KNGA','KGAC'],svcs:['N','C']},
+  {id:'fargo',city:'Fargo/Moorhead',region:'West MN',lat:46.8772,lon:-96.7898,calls:['KCCD','KCCM'],svcs:['N','C']},
+  {id:'bemidji',city:'Bemidji',region:'North Central MN',lat:47.4736,lon:-94.8803,calls:['KNBJ','KCRB'],svcs:['N','C']},
+  {id:'fergus',city:'Fergus Falls',region:'West MN',lat:46.2830,lon:-96.0780,calls:['KNWF','KCMF'],svcs:['N','C']},
+  {id:'appleton',city:'Appleton',region:'West MN',lat:45.1994,lon:-96.0069,calls:['KNCM','KRSU'],svcs:['N','C']},
+  {id:'grandmarais',city:'Grand Marais',region:'Northeast MN',lat:47.7483,lon:-90.3344,calls:['WLSN','WMLS'],svcs:['N','C']},
+  {id:'ely',city:'Ely',region:'Northeast MN',lat:47.9030,lon:-91.8671,calls:['WIRC','WIRR'],svcs:['N','C']},
+  {id:'intlfalls',city:'International Falls',region:'North MN',lat:48.6013,lon:-93.4011,calls:['KITF'],svcs:['N']},
+  {id:'brainerd',city:'Brainerd',region:'Central MN',lat:46.3580,lon:-94.2008,calls:['KBPN','KBPR'],svcs:['N','C']},
+  {id:'grandrpds',city:'Grand Rapids',region:'Northeast MN',lat:47.2372,lon:-93.5305,calls:['KGRP'],svcs:['N','C','T']},
+  {id:'thief',city:'Thief River Falls',region:'Northwest MN',lat:48.1191,lon:-96.1822,calls:['KNTN','KQMN'],svcs:['N','C']},
+  {id:'roseau',city:'Roseau',region:'Northwest MN',lat:48.8455,lon:-95.7624,calls:['KRXW','KQMN'],svcs:['N','C']},
+  {id:'virginia',city:'Virginia/Hibbing',region:'Northeast MN',lat:47.5236,lon:-92.5377,calls:['WIRN','WIRR'],svcs:['N','C']},
+  {id:'worthington',city:'Worthington/Marshall',region:'Southwest MN',lat:43.6197,lon:-95.5966,calls:['KNSW','KRSW'],svcs:['N','C']},
+  {id:'redwoodfalls',city:'Redwood Falls',region:'Southwest MN',lat:44.5388,lon:-95.1169,calls:['KRFI'],svcs:['N']},
+];
+
+const SVC_COLOR={N:'#185FA5',C:'#3B6D11',T:'#BA7517'};
+const REGIONS=[...new Set(SITES.map(s=>s.region))];
+let selected=new Set();
+let bufferMiles=30;
+let lastResults=null;
+
+const MN_COUNTY_CENTROIDS={
+  '003':[47.4,-93.3],'005':[46.8,-95.1],'007':[47.5,-91.5],'009':[45.4,-93.2],
+  '011':[46.6,-92.7],'013':[46.4,-96.4],'015':[46.3,-95.4],'017':[44.0,-93.9],
+  '019':[43.7,-92.1],'021':[44.9,-95.0],'023':[45.9,-92.8],'025':[47.3,-92.5],
+  '027':[44.3,-94.4],'029':[43.7,-93.2],'031':[46.0,-94.1],'033':[45.6,-95.8],
+  '035':[47.5,-93.3],'037':[46.8,-94.2],'039':[46.5,-94.8],'041':[48.8,-94.3],
+  '043':[43.7,-91.2],'045':[48.6,-93.4],'047':[44.3,-93.9],'049':[48.3,-97.0],
+  '051':[45.7,-94.5],'053':[44.2,-95.8],'055':[47.1,-94.6],'057':[44.5,-93.6],
+  '059':[44.7,-93.3],'061':[44.0,-93.0],'063':[45.1,-96.2],'065':[44.0,-91.8],
+  '067':[44.0,-92.5],'069':[44.5,-94.9],'071':[46.1,-94.6],'073':[44.9,-93.5],
+  '075':[45.2,-94.0],'077':[46.0,-95.7],'079':[47.5,-90.7],'081':[45.3,-96.8],
+  '083':[45.0,-95.4],'085':[44.0,-92.1],'087':[47.8,-92.8],'089':[47.5,-95.7],
+  '091':[43.7,-95.7],'093':[44.3,-92.6],'095':[43.7,-94.9],'097':[43.7,-96.4],
+  '099':[45.0,-96.5],'101':[45.0,-95.8],'103':[43.7,-94.3],'105':[44.3,-95.3],
+  '107':[45.0,-94.5],'109':[45.5,-94.0],'111':[47.3,-93.1],'113':[44.0,-95.3],
+  '115':[48.7,-96.2],'117':[45.6,-93.6],'119':[45.0,-96.0],'121':[44.7,-93.0],
+  '123':[48.2,-95.4],'125':[45.3,-93.3],'127':[44.8,-93.1],
+};
+
+function buildSidebar(){
+  const el=document.getElementById('sitesList');
+  el.innerHTML='';
+  REGIONS.forEach(region=>{
+    const sites=SITES.filter(s=>s.region===region);
+    const grp=document.createElement('div');
+    grp.className='region-group';
+    grp.innerHTML=`<div class="region-label">${region}</div>`;
+    sites.forEach(site=>{
+      const item=document.createElement('div');
+      item.className='site-item'+(selected.has(site.id)?' checked':'');
+      item.id='item-'+site.id;
+      const dots=site.svcs.map(s=>`<span class="svc-dot" style="background:${SVC_COLOR[s]}"></span>`).join('');
+      item.innerHTML=`
+        <input type="checkbox" ${selected.has(site.id)?'checked':''}>
+        <div><div class="site-name">${site.city}</div><div class="site-call">${site.calls.join(' · ')}</div></div>
+        <div class="svc-dots">${dots}</div>`;
+      item.querySelector('input').addEventListener('change',e=>toggleSite(site.id,e.target.checked));
+      grp.appendChild(item);
+    });
+    el.appendChild(grp);
+  });
+}
+
+function toggleSite(id,checked){
+  checked?selected.add(id):selected.delete(id);
+  const item=document.getElementById('item-'+id);
+  if(item){item.className='site-item'+(checked?' checked':'');}
+  updateCount();
+}
+function updateCount(){document.getElementById('siteCount').textContent=`${selected.size} site${selected.size!==1?'s':''} selected`;}
+function selectAll(){SITES.forEach(s=>{selected.add(s.id);const el=document.getElementById('item-'+s.id);if(el){el.className='site-item checked';el.querySelector('input').checked=true;}});updateCount();}
+function clearAll(){SITES.forEach(s=>{selected.delete(s.id);const el=document.getElementById('item-'+s.id);if(el){el.className='site-item';el.querySelector('input').checked=false;}});updateCount();}
+
+document.getElementById('bufferRange').addEventListener('input',function(){
+  bufferMiles=+this.value;
+  document.getElementById('bufferVal').textContent=bufferMiles+' mi';
+});
+
+function showTab(tab){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['map','data'][i]===tab));
+  document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',['panel-map','panel-data'][i]==='panel-'+tab));
+}
+
+function pointInCircle(lat,lon,cLat,cLon,radiusMi){
+  const R=3958.8,dLat=(lat-cLat)*Math.PI/180,dLon=(lon-cLon)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2+Math.cos(cLat*Math.PI/180)*Math.cos(lat*Math.PI/180)*Math.sin(dLon/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))<=radiusMi;
+}
+
+function milesToDeg(m){return m/69;}
+
+async function fetchCensusData(selectedSites,radiusMi){
+  const url=`https://api.census.gov/data/2022/acs/acs5?get=NAME,B19013_001E,B01003_001E&for=county:*&in=state:27&key=${CENSUS_KEY}`;
+  const resp=await fetch(url);
+  if(!resp.ok)throw new Error('Census API returned '+resp.status);
+  const raw=await resp.json();
+  const headers=raw[0];
+  const rows=raw.slice(1);
+  const nameI=headers.indexOf('NAME'),incI=headers.indexOf('B19013_001E'),popI=headers.indexOf('B01003_001E'),countyI=headers.indexOf('county');
+  const results=[];
+  rows.forEach(r=>{
+    const fips=r[countyI],income=parseInt(r[incI]),pop=parseInt(r[popI]);
+    const name=r[nameI].replace(', Minnesota','');
+    if(income<0||pop<0)return;
+    const centroid=MN_COUNTY_CENTROIDS[fips];
+    if(!centroid)return;
+    const [cLat,cLon]=centroid;
+    const matchedSites=selectedSites.filter(s=>pointInCircle(cLat,cLon,s.lat,s.lon,radiusMi));
+    if(matchedSites.length===0)return;
+    results.push({name,fips,income,pop,sites:matchedSites.map(s=>s.city),state:'27'});
+  });
+  return results;
+}
+
+async function runAnalysis(){
+  if(selected.size===0){alert('Please select at least one site.');return;}
+  const selectedSites=SITES.filter(s=>selected.has(s.id));
+  showTab('map');
+  document.getElementById('mapEmpty').style.display='none';
+  document.getElementById('mapSvg').style.display='none';
+  document.getElementById('mapLegend').style.display='none';
+  const container=document.getElementById('mapContainer');
+  let loadDiv=document.getElementById('mapLoading');
+  if(!loadDiv){loadDiv=document.createElement('div');loadDiv.id='mapLoading';loadDiv.className='loading-state';loadDiv.innerHTML='<div class="spinner"></div><span>Fetching Census ACS data…</span>';container.appendChild(loadDiv);}
+  loadDiv.style.display='flex';
+  document.getElementById('dataContent').innerHTML='<div class="loading-state"><div class="spinner"></div><span>Loading…</span></div>';
+  try{
+    const countyData=await fetchCensusData(selectedSites,bufferMiles);
+    lastResults=countyData;
+    loadDiv.style.display='none';
+    renderMap(selectedSites,countyData);
+    renderTable(selectedSites,countyData);
+  }catch(e){
+    loadDiv.style.display='none';
+    document.getElementById('mapEmpty').style.display='flex';
+    document.getElementById('mapEmpty').innerHTML=`<div class="empty-icon" style="font-size:24px;opacity:.5">!</div><div class="error-box" style="max-width:320px">Census API error: ${e.message}<br><small>Check your network connection and try again.</small></div>`;
+    document.getElementById('dataContent').innerHTML=`<div class="data-panel"><div class="error-box">Census API error: ${e.message}</div></div>`;
+  }
+}
+
+function renderMap(selectedSites,countyData){
+  const svgEl=document.getElementById('mapSvg');
+  svgEl.style.display='block';
+  const container=document.getElementById('mapContainer');
+  const W=container.offsetWidth||700,H=container.offsetHeight||460;
+  svgEl.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  const svg=d3.select('#mapSvg');
+  svg.selectAll('*').remove();
+  const proj=d3.geoMercator().center([-93.0,46.2]).scale(3800*(W/740)).translate([W/2,H/2]);
+  const path=d3.geoPath(proj);
+  const incomes=countyData.map(c=>c.income).filter(i=>i>0);
+  const incMin=d3.min(incomes)||30000,incMax=d3.max(incomes)||90000;
+  const colorScale=d3.scaleSequential([incMin,incMax],d3.interpolateBlues);
+  d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json').then(us=>{
+    const features=topojson.feature(us,us.objects.counties).features;
+    const mnFeatures=features.filter(f=>String(f.id).padStart(5,'0').startsWith('27'));
+    svg.selectAll('.county').data(mnFeatures).join('path')
+      .attr('d',path)
+      .attr('fill',d=>{const fips=String(d.id).padStart(5,'0').slice(2);const cd=countyData.find(c=>c.fips===fips);return cd?colorScale(cd.income):'#d4d0c8';})
+      .attr('stroke','#fff').attr('stroke-width',0.5)
+      .on('mousemove',function(e,d){
+        const fips=String(d.id).padStart(5,'0').slice(2);
+        const cd=countyData.find(c=>c.fips===fips);
+        if(!cd)return;
+        const tip=document.getElementById('mapTip');
+        tip.style.display='block';
+        tip.style.left=(e.offsetX+14)+'px';
+        tip.style.top=(e.offsetY-8)+'px';
+        tip.innerHTML=`<strong>${cd.name} County</strong>Median income: $${cd.income.toLocaleString()}<br>Population: ${cd.pop.toLocaleString()}<br><span style="color:#888;font-size:10px">Sites: ${cd.sites.join(', ')}</span>`;
+      })
+      .on('mouseleave',()=>{document.getElementById('mapTip').style.display='none';});
+    selectedSites.forEach(site=>{
+      const [cx,cy]=proj([site.lon,site.lat]);
+      const edgePt=proj([site.lon+milesToDeg(bufferMiles),site.lat]);
+      const r=Math.abs(edgePt[0]-cx);
+      svg.append('circle').attr('cx',cx).attr('cy',cy).attr('r',r)
+        .attr('fill','rgba(24,95,165,0.07)').attr('stroke','rgba(24,95,165,0.4)').attr('stroke-width',1).attr('stroke-dasharray','5,3');
+    });
+    selectedSites.forEach(site=>{
+      const [cx,cy]=proj([site.lon,site.lat]);
+      svg.append('circle').attr('cx',cx).attr('cy',cy).attr('r',site.flagship?9:6)
+        .attr('fill',site.flagship?'#533AB7':'#185FA5').attr('stroke','#fff').attr('stroke-width',2);
+      svg.append('text').attr('x',cx).attr('y',cy-12).attr('text-anchor','middle')
+        .attr('font-size',9).attr('font-family',"'IBM Plex Mono',monospace").attr('fill','#1a1a1a').attr('font-weight',500)
+        .text(site.city.split('/')[0]);
+    });
+    const legendBar=document.getElementById('legendBar');
+    legendBar.innerHTML='';
+    for(let i=0;i<8;i++){const seg=document.createElement('div');seg.className='legend-seg';seg.style.background=colorScale(incMin+(incMax-incMin)*(i/7));legendBar.appendChild(seg);}
+    document.getElementById('legendLow').textContent='$'+Math.round(incMin/1000)+'k';
+    document.getElementById('legendHigh').textContent='$'+Math.round(incMax/1000)+'k';
+    document.getElementById('mapLegend').style.display='flex';
+  });
+}
+
+function renderTable(selectedSites,countyData){
+  if(countyData.length===0){document.getElementById('dataContent').innerHTML='<div class="empty-state"><div class="empty-icon">▦</div><div>No counties found within buffer range.</div></div>';return;}
+  const sorted=[...countyData].sort((a,b)=>a.income-b.income);
+  const totalPop=sorted.reduce((s,c)=>s+c.pop,0);
+  const avgIncome=Math.round(sorted.reduce((s,c)=>s+c.income*c.pop,0)/totalPop);
+  const incMin=Math.min(...sorted.map(c=>c.income)),incMax=Math.max(...sorted.map(c=>c.income));
+  document.getElementById('dataContent').innerHTML=`
+    <h3>Census analysis — ${selectedSites.length} site${selectedSites.length!==1?'s':''}, ${bufferMiles}-mile buffer
+      <button class="copy-btn" onclick="copyTable()">Copy TSV</button>
+    </h3>
+    <div class="summary-cards">
+      <div class="scard"><div class="scard-n">${sorted.length}</div><div class="scard-l">Counties in service area</div></div>
+      <div class="scard"><div class="scard-n">${(totalPop/1000000).toFixed(2)}M</div><div class="scard-l">Total population served</div></div>
+      <div class="scard"><div class="scard-n">$${Math.round(avgIncome/1000)}k</div><div class="scard-l">Wtd. avg median income</div></div>
+    </div>
+    <div style="overflow-x:auto">
+    <table class="data-table" id="resultsTable">
+      <thead><tr><th>County</th><th>Median HH income</th><th>Population</th><th>Serving site(s)</th></tr></thead>
+      <tbody>${sorted.map(c=>{
+        const pct=Math.round((c.income-incMin)/(incMax-incMin)*100);
+        return `<tr>
+          <td style="font-weight:500">${c.name}</td>
+          <td><div style="display:flex;align-items:center;gap:8px"><div class="income-bar-wrap"><div class="income-bar" style="width:${pct}%"></div></div><span style="font-family:var(--mono);font-size:11px">$${c.income.toLocaleString()}</span></div></td>
+          <td style="font-family:var(--mono);font-size:11px">${c.pop.toLocaleString()}</td>
+          <td style="font-size:11px;color:var(--ink3)">${c.sites.join(', ')}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table></div>`;
+}
+
+function copyTable(){
+  if(!lastResults)return;
+  const rows=[['County','Median HH Income','Population','Sites'],...lastResults.map(c=>[c.name,'$'+c.income,c.pop,c.sites.join('; ')])];
+  navigator.clipboard.writeText(rows.map(r=>r.join('\t')).join('\n')).then(()=>{const btn=document.querySelector('.copy-btn');btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy TSV',1500);});
+}
+
+buildSidebar();
+updateCount();
+</script>
+</body>
+</html>
