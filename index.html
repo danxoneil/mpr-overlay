@@ -14,7 +14,7 @@
   --ink:#1a1a1a;--ink2:#555;--ink3:#888;
   --paper:#f7f5f0;--paper2:#edeae3;--paper3:#e2dfd7;
   --blue:#185FA5;--blue-light:#E6F1FB;--blue-dark:#0C447C;
-  --red:#A32D2D;--border:1px solid #d0cdc5;
+  --green:#3B6D11;--red:#A32D2D;--border:1px solid #d0cdc5;
   --radius:6px;--mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
 }
 html,body{height:100%;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px}
@@ -23,142 +23,142 @@ header h1{font-family:var(--mono);font-size:14px;font-weight:600;color:#fff;lett
 header p{font-family:var(--mono);font-size:11px;color:#888}
 .app{display:grid;grid-template-columns:270px 1fr;height:calc(100vh - 43px);overflow:hidden}
 .sidebar{background:var(--paper2);border-right:var(--border);display:flex;flex-direction:column;overflow:hidden}
-.sidebar-section{padding:10px 14px;border-bottom:var(--border)}
-.sidebar-section label{font-size:10px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px;font-family:var(--mono)}
-.buffer-row{display:flex;align-items:center;gap:8px}
-.buffer-row input[type=range]{flex:1;accent-color:var(--blue)}
-.buffer-val{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--blue);min-width:45px;text-align:right}
-.metric-select{width:100%;padding:6px 8px;border-radius:var(--radius);border:var(--border);background:var(--paper);font-size:12px;font-family:var(--mono);color:var(--ink);cursor:pointer}
-.sites-list{flex:1;overflow-y:auto;padding:6px}
-.region-group{margin-bottom:2px}
-.region-label{font-size:9px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;padding:5px 8px 2px;font-family:var(--mono)}
-.site-item{display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:var(--radius);cursor:pointer;transition:background .12s}
-.site-item:hover{background:var(--paper3)}
-.site-item.checked{background:var(--blue-light)}
-.site-item input[type=checkbox]{accent-color:var(--blue);width:12px;height:12px;flex-shrink:0;cursor:pointer}
-.site-name{font-size:11px;font-weight:500;color:var(--ink);line-height:1.3}
-.site-call{font-family:var(--mono);font-size:9px;color:var(--ink3)}
-.svc-dots{display:flex;gap:3px;margin-left:auto;flex-shrink:0}
-.svc-dot{width:5px;height:5px;border-radius:50%}
-.select-actions{padding:8px 14px;border-top:var(--border);display:flex;gap:6px;flex-shrink:0}
-.btn-sm{flex:1;padding:6px 8px;border-radius:var(--radius);border:var(--border);background:var(--paper);font-size:11px;font-weight:500;cursor:pointer;font-family:var(--mono);color:var(--ink2);transition:background .12s}
-.btn-sm:hover{background:var(--paper3)}
-.btn-run{background:var(--blue);color:#fff;border-color:var(--blue);flex:2}
-.btn-run:hover{background:var(--blue-dark)}
+.ss{padding:10px 14px;border-bottom:var(--border)}
+.ss label{font-size:10px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px;font-family:var(--mono)}
+.brow{display:flex;align-items:center;gap:8px}
+.brow input[type=range]{flex:1;accent-color:var(--blue)}
+.bval{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--blue);min-width:45px;text-align:right}
+.msel{width:100%;padding:6px 8px;border-radius:var(--radius);border:var(--border);background:var(--paper);font-size:12px;font-family:var(--mono);color:var(--ink);cursor:pointer}
+.slist{flex:1;overflow-y:auto;padding:6px}
+.rgrp{margin-bottom:2px}
+.rlbl{font-size:9px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;padding:5px 8px 2px;font-family:var(--mono)}
+.si{display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:var(--radius);cursor:pointer;transition:background .12s}
+.si:hover{background:var(--paper3)}
+.si.on{background:var(--blue-light)}
+.si input{accent-color:var(--blue);width:12px;height:12px;flex-shrink:0;cursor:pointer}
+.sn{font-size:11px;font-weight:500;color:var(--ink);line-height:1.3}
+.sc{font-family:var(--mono);font-size:9px;color:var(--ink3)}
+.sdots{display:flex;gap:3px;margin-left:auto;flex-shrink:0}
+.sd{width:5px;height:5px;border-radius:50%}
+.acts{padding:8px 14px;border-top:var(--border);display:flex;gap:6px;flex-shrink:0}
+.btn{flex:1;padding:6px 8px;border-radius:var(--radius);border:var(--border);background:var(--paper);font-size:11px;font-weight:500;cursor:pointer;font-family:var(--mono);color:var(--ink2);transition:background .12s}
+.btn:hover{background:var(--paper3)}
+.btnp{background:var(--blue);color:#fff;border-color:var(--blue);flex:2}
+.btnp:hover{background:var(--blue-dark)}
 .main{display:flex;flex-direction:column;overflow:hidden}
 .tabs{display:flex;border-bottom:var(--border);background:var(--paper2);flex-shrink:0}
 .tab{padding:9px 16px;font-size:11px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;color:var(--ink3);font-family:var(--mono);transition:all .12s;white-space:nowrap}
-.tab.active{color:var(--blue);border-bottom-color:var(--blue);background:var(--paper)}
+.tab.on{color:var(--blue);border-bottom-color:var(--blue);background:var(--paper)}
 .panel{display:none;flex:1;overflow:auto;flex-direction:column}
-.panel.active{display:flex}
-.map-container{position:relative;flex:1;background:#ddd9d0;min-height:300px}
-.map-container svg{width:100%;height:100%;display:block}
-.map-tip{position:absolute;background:var(--paper);border:var(--border);border-radius:var(--radius);padding:9px 12px;font-size:11px;pointer-events:none;display:none;z-index:20;max-width:230px;box-shadow:0 2px 10px rgba(0,0,0,.14);line-height:1.7}
-.map-tip strong{display:block;font-size:12px;margin-bottom:4px;font-family:var(--mono);border-bottom:var(--border);padding-bottom:4px}
-.map-tip .tip-row{display:flex;justify-content:space-between;gap:12px;font-size:10px}
-.map-tip .tip-label{color:var(--ink3)}
-.map-tip .tip-val{font-family:var(--mono);font-weight:500;color:var(--ink)}
-.map-tip .tip-section{font-size:9px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;margin-top:5px;margin-bottom:2px;font-family:var(--mono)}
-.map-legend{display:flex;align-items:center;gap:10px;padding:7px 14px;border-top:var(--border);background:var(--paper2);flex-wrap:wrap;flex-shrink:0}
-.legend-label{font-size:10px;color:var(--ink3);font-family:var(--mono)}
-.legend-bar{display:flex;height:8px;border-radius:3px;overflow:hidden;width:100px}
-.legend-seg{flex:1}
-.legend-ends{display:flex;justify-content:space-between;width:100px;font-size:9px;color:var(--ink3);font-family:var(--mono);margin-top:2px}
-.data-panel{padding:16px;flex:1;overflow:auto}
-.data-panel h3{font-size:11px;font-weight:600;font-family:var(--mono);color:var(--ink2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px}
-.summary-cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:14px}
-.scard{background:var(--paper2);border:var(--border);border-radius:var(--radius);padding:9px 11px}
-.scard-n{font-size:18px;font-weight:600;color:var(--ink);font-family:var(--mono)}
-.scard-l{font-size:9px;color:var(--ink3);margin-top:2px;text-transform:uppercase;letter-spacing:.04em;line-height:1.4}
-.data-table{width:100%;border-collapse:collapse;font-size:11px}
-.data-table th{text-align:left;font-weight:600;font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3);padding:6px 8px;border-bottom:2px solid var(--paper3);background:var(--paper);position:sticky;top:0;white-space:nowrap;cursor:pointer}
-.data-table th:hover{color:var(--blue)}
-.data-table th.sorted{color:var(--blue)}
-.data-table td{padding:6px 8px;border-bottom:var(--border);vertical-align:middle;white-space:nowrap}
-.data-table tr:hover td{background:var(--blue-light)}
-.bar-wrap{width:50px;height:5px;background:var(--paper3);border-radius:3px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:4px}
-.bar-fill{height:100%;border-radius:3px}
-.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--ink3);gap:10px;font-family:var(--mono);font-size:12px}
-.empty-icon{font-size:32px;opacity:.25}
-.loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px;font-family:var(--mono);font-size:12px;color:var(--ink3)}
-.spinner{width:20px;height:20px;border:2px solid var(--paper3);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite}
+.panel.on{display:flex}
+.mc{position:relative;flex:1;background:#ddd9d0;min-height:300px}
+.mc svg{width:100%;height:100%;display:block}
+.tip{position:absolute;background:var(--paper);border:var(--border);border-radius:var(--radius);padding:9px 12px;font-size:11px;pointer-events:none;display:none;z-index:20;max-width:240px;box-shadow:0 2px 10px rgba(0,0,0,.14);line-height:1.7}
+.tip strong{display:block;font-size:12px;margin-bottom:4px;font-family:var(--mono);border-bottom:var(--border);padding-bottom:4px}
+.tip .tr{display:flex;justify-content:space-between;gap:12px;font-size:10px}
+.tip .tl{color:var(--ink3)}
+.tip .tv{font-family:var(--mono);font-weight:500;color:var(--ink)}
+.tip .ts{font-size:9px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;margin-top:5px;margin-bottom:2px;font-family:var(--mono)}
+.leg{display:flex;align-items:center;gap:10px;padding:7px 14px;border-top:var(--border);background:var(--paper2);flex-wrap:wrap;flex-shrink:0}
+.ll{font-size:10px;color:var(--ink3);font-family:var(--mono)}
+.lb{display:flex;height:8px;border-radius:3px;overflow:hidden;width:100px}
+.ls{flex:1}
+.le{display:flex;justify-content:space-between;width:100px;font-size:9px;color:var(--ink3);font-family:var(--mono);margin-top:2px}
+.dp{padding:16px;flex:1;overflow:auto}
+.dp h3{font-size:11px;font-weight:600;font-family:var(--mono);color:var(--ink2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px}
+.cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:12px}
+.card{background:var(--paper2);border:var(--border);border-radius:var(--radius);padding:9px 11px}
+.cn{font-size:18px;font-weight:600;color:var(--ink);font-family:var(--mono)}
+.cl{font-size:9px;color:var(--ink3);margin-top:2px;text-transform:uppercase;letter-spacing:.04em;line-height:1.4}
+.info{background:#E6F1FB;border:1px solid #B5D4F4;border-radius:var(--radius);padding:9px 12px;margin-bottom:12px;font-size:11px;line-height:1.6;font-family:var(--mono)}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{text-align:left;font-weight:600;font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3);padding:6px 8px;border-bottom:2px solid var(--paper3);background:var(--paper);position:sticky;top:0;white-space:nowrap;cursor:pointer}
+th:hover,th.on{color:var(--blue)}
+td{padding:6px 8px;border-bottom:var(--border);vertical-align:middle;white-space:nowrap}
+tr:hover td{background:var(--blue-light)}
+.bw{width:50px;height:5px;background:var(--paper3);border-radius:3px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:4px}
+.bf{height:100%;border-radius:3px;background:var(--blue)}
+.es{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--ink3);gap:10px;font-family:var(--mono);font-size:12px}
+.ei{font-size:32px;opacity:.25}
+.ls2{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px;font-family:var(--mono);font-size:12px;color:var(--ink3)}
+.sp{width:20px;height:20px;border:2px solid var(--paper3);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.error-box{background:#fcebeb;border:1px solid #f09595;border-radius:var(--radius);padding:12px 14px;font-size:11px;color:var(--red);font-family:var(--mono);line-height:1.6;margin:16px}
-.copy-btn{padding:4px 10px;border-radius:var(--radius);border:var(--border);background:var(--paper);font-size:10px;cursor:pointer;font-family:var(--mono);color:var(--ink2);float:right}
-.copy-btn:hover{background:var(--paper3)}
-.site-count{font-size:10px;font-family:var(--mono);color:var(--ink3);padding:4px 14px;border-bottom:var(--border)}
-@media(max-width:700px){.app{grid-template-columns:1fr;grid-template-rows:auto 1fr}.sidebar{max-height:45vh}.summary-cards{grid-template-columns:repeat(2,1fr)}}
+.eb{background:#fcebeb;border:1px solid #f09595;border-radius:var(--radius);padding:12px 14px;font-size:11px;color:var(--red);font-family:var(--mono);line-height:1.6;margin:16px}
+.cb{padding:4px 10px;border-radius:var(--radius);border:var(--border);background:var(--paper);font-size:10px;cursor:pointer;font-family:var(--mono);color:var(--ink2);float:right}
+.cb:hover{background:var(--paper3)}
+.sct{font-size:10px;font-family:var(--mono);color:var(--ink3);padding:4px 14px;border-bottom:var(--border)}
+@media(max-width:700px){.app{grid-template-columns:1fr;grid-template-rows:auto 1fr}.sidebar{max-height:45vh}.cards{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
 <header>
   <h1>MPR Infrastructure Site Analysis</h1>
-  <p>ACS 2022 5-Year Estimates · County-level demographics · FY2027 Congressionally Directed Funding</p>
+  <p>ACS 2022 5-Year Estimates &middot; County-level demographics &middot; FY2027 Congressionally Directed Funding</p>
 </header>
 <div class="app">
   <div class="sidebar">
-    <div class="sidebar-section">
+    <div class="ss">
       <label>Coverage buffer radius</label>
-      <div class="buffer-row">
-        <input type="range" id="bufferRange" min="10" max="75" value="30" step="5">
-        <span class="buffer-val" id="bufferVal">30 mi</span>
+      <div class="brow">
+        <input type="range" id="bufR" min="10" max="75" value="30" step="5">
+        <span class="bval" id="bufV">30 mi</span>
       </div>
     </div>
-    <div class="sidebar-section">
+    <div class="ss">
       <label>Map color metric</label>
-      <select class="metric-select" id="metricSelect">
+      <select class="msel" id="metSel">
         <option value="income">Median household income</option>
         <option value="poverty">Poverty rate (%)</option>
+        <option value="lmi_pct">LMI households — below 80% AMI (%)</option>
+        <option value="vlmi_pct">Very LMI — below 50% AMI (%)</option>
         <option value="no_internet">No internet access (%)</option>
         <option value="unemployed">Unemployment rate (%)</option>
         <option value="renter">Renter-occupied housing (%)</option>
         <option value="age65">Population age 65+ (%)</option>
         <option value="nonwhite">Non-white population (%)</option>
-        <option value="aian">American Indian / Alaska Native (%)</option>
+        <option value="aian">Amer. Indian / Alaska Native (%)</option>
         <option value="hispanic">Hispanic or Latino (%)</option>
         <option value="black">Black / African American (%)</option>
         <option value="asian">Asian (%)</option>
-        <option value="lmi_pct">LMI households — below 80% AMI (%)</option>
-        <option value="vlmi_pct">Very LMI households — below 50% AMI (%)</option>
       </select>
     </div>
-    <div class="site-count" id="siteCount">0 sites selected</div>
-    <div class="sites-list" id="sitesList"></div>
-    <div class="select-actions">
-      <button class="btn-sm" onclick="selectAll()">All</button>
-      <button class="btn-sm" onclick="clearAll()">None</button>
-      <button class="btn-sm btn-run" onclick="runAnalysis()">Analyze ↗</button>
+    <div class="sct" id="sct">0 sites selected</div>
+    <div class="slist" id="slist"></div>
+    <div class="acts">
+      <button class="btn" onclick="selAll()">All</button>
+      <button class="btn" onclick="selNone()">None</button>
+      <button class="btn btnp" onclick="run()">Analyze &#8599;</button>
     </div>
   </div>
   <div class="main">
     <div class="tabs">
-      <div class="tab active" onclick="showTab('map')">Map view</div>
+      <div class="tab on" onclick="showTab('map')">Map view</div>
       <div class="tab" onclick="showTab('data')">Data table</div>
     </div>
-    <div class="panel active" id="panel-map">
-      <div class="map-container" id="mapContainer">
-        <div class="empty-state" id="mapEmpty"><div class="empty-icon">◎</div><div>Select sites and click Analyze</div></div>
-        <svg id="mapSvg" style="display:none"></svg>
-        <div class="map-tip" id="mapTip"></div>
+    <div class="panel on" id="pm">
+      <div class="mc" id="mc">
+        <div class="es" id="me"><div class="ei">&#9711;</div><div>Select sites and click Analyze</div></div>
+        <svg id="ms" style="display:none"></svg>
+        <div class="tip" id="tip"></div>
       </div>
-      <div class="map-legend" id="mapLegend" style="display:none">
-        <span class="legend-label" id="legendTitle">Median HH income</span>
-        <div><div class="legend-bar" id="legendBar"></div><div class="legend-ends"><span id="legendLow"></span><span id="legendHigh"></span></div></div>
-        <span style="margin-left:6px;font-size:10px;color:var(--ink3);font-family:var(--mono)">● site &nbsp; ◌ buffer &nbsp; <span style="color:#bbb">■</span> outside range</span>
+      <div class="leg" id="leg" style="display:none">
+        <span class="ll" id="lt">Median HH income</span>
+        <div><div class="lb" id="lb"></div><div class="le"><span id="ll"></span><span id="lh"></span></div></div>
+        <span style="margin-left:6px;font-size:10px;color:var(--ink3);font-family:var(--mono)">&#9679; site &nbsp; &#9675; buffer &nbsp; <span style="color:#bbb">&#9632;</span> outside range</span>
       </div>
     </div>
-    <div class="panel" id="panel-data">
-      <div class="data-panel" id="dataContent">
-        <div class="empty-state"><div class="empty-icon">▦</div><div>Run analysis to see county data</div></div>
+    <div class="panel" id="pd">
+      <div class="dp" id="dc">
+        <div class="es"><div class="ei">&#9638;</div><div>Run analysis to see county data</div></div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-const CENSUS_KEY = 'YOUR_CENSUS_API_KEY';
+var CENSUS_KEY = 'a25d819c5141640da6bd188da09edb9abf19bbb2';
 
-const SITES = [
+var SITES = [
   {id:'tcmsp',  city:'Minneapolis/St. Paul', region:'Twin Cities',      lat:44.9778,lon:-93.2650,calls:['KNOW','KSJN','KCMP'],svcs:['N','C','T'],flagship:true},
   {id:'duluth', city:'Duluth/Superior',      region:'Northeast MN',     lat:46.7833,lon:-92.1066,calls:['WSCN','WSCD','KZIO'],svcs:['N','C','T']},
   {id:'rochester',city:'Rochester',          region:'Southeast MN',     lat:44.0121,lon:-92.4802,calls:['KZSE','KLSE','KMSE'],svcs:['N','C','T']},
@@ -180,481 +180,449 @@ const SITES = [
   {id:'redwoodfalls',city:'Redwood Falls',   region:'Southwest MN',     lat:44.5388,lon:-95.1169,calls:['KRFI'],              svcs:['N']},
 ];
 
-const SVC_COLOR={N:'#185FA5',C:'#3B6D11',T:'#BA7517'};
-const REGIONS=[...new Set(SITES.map(s=>s.region))];
+var SVC_COLOR = {N:'#185FA5',C:'#3B6D11',T:'#BA7517'};
+var REGIONS = [];
+SITES.forEach(function(s){ if(REGIONS.indexOf(s.region)===-1) REGIONS.push(s.region); });
 
-// Single Census API call — 27 data vars + NAME + state + county = 30 total (well under 50 limit)
-const CENSUS_VARS = [
-  'B01003_001E',  // total population
-  'B19013_001E',  // median HH income
-  'B17001_001E',  // poverty universe
-  'B17001_002E',  // below poverty line
-  'B01001_020E','B01001_021E','B01001_022E','B01001_025E',  // male 65+
-  'B01001_044E','B01001_045E','B01001_046E','B01001_049E',  // female 65+
-  'B28002_001E',  // internet universe
-  'B28002_013E',  // no internet access
-  'B23025_003E',  // civilian labor force
-  'B23025_005E',  // unemployed
-  'B25003_001E',  // housing universe
-  'B25003_003E',  // renter occupied
-  'B03002_001E',  // race/ethnicity universe
-  'B03002_003E',  // White non-Hispanic
-  'B03002_004E',  // Black/AA non-Hispanic
-  'B03002_005E',  // American Indian/Alaska Native non-Hispanic
-  'B03002_006E',  // Asian non-Hispanic
-  'B03002_007E',  // NHPI non-Hispanic
-  'B03002_008E',  // Some other race non-Hispanic
-  'B03002_009E',  // Two or more races non-Hispanic
-  'B03002_012E',  // Hispanic or Latino
-  // Household income distribution (for LMI calculation)
-  'B19001_001E',  // total households
-  'B19001_002E',  // < $10k
-  'B19001_003E',  // $10k-$14,999
-  'B19001_004E',  // $15k-$19,999
-  'B19001_005E',  // $20k-$24,999
-  'B19001_006E',  // $25k-$29,999
-  'B19001_007E',  // $30k-$34,999
-  'B19001_008E',  // $35k-$39,999
-  'B19001_009E',  // $40k-$44,999
-  'B19001_010E',  // $45k-$49,999
-  'B19001_011E',  // $50k-$59,999
-  'B19001_012E',  // $60k-$74,999
-  'B19001_013E',  // $75k-$99,999
-  'B19001_014E',  // $100k-$124,999
-  'B19001_015E',  // $125k-$149,999
-  'B19001_016E',  // $150k-$199,999
-  'B19001_017E',  // $200k+
+var CENSUS_VARS = [
+  'B01003_001E','B19013_001E','B17001_001E','B17001_002E',
+  'B01001_020E','B01001_021E','B01001_022E','B01001_025E',
+  'B01001_044E','B01001_045E','B01001_046E','B01001_049E',
+  'B28002_001E','B28002_013E','B23025_003E','B23025_005E',
+  'B25003_001E','B25003_003E',
+  'B03002_001E','B03002_003E','B03002_004E','B03002_005E',
+  'B03002_006E','B03002_012E',
+  'B19001_001E','B19001_002E','B19001_003E','B19001_004E',
+  'B19001_005E','B19001_006E','B19001_007E','B19001_008E',
+  'B19001_009E','B19001_010E','B19001_011E','B19001_012E',
+  'B19001_013E','B19001_014E','B19001_015E','B19001_016E',
+  'B19001_017E'
 ].join(',');
 
-const METRIC_CONFIG = {
-  income:    {label:'Median HH income',           fmt:v=>'$'+Math.round(v).toLocaleString(), scheme:d3.interpolateBlues},
-  poverty:   {label:'Poverty rate (%)',            fmt:v=>v.toFixed(1)+'%',                  scheme:d3.interpolateOranges},
-  no_internet:{label:'No internet access (%)',     fmt:v=>v.toFixed(1)+'%',                  scheme:d3.interpolateReds},
-  unemployed:{label:'Unemployment rate (%)',       fmt:v=>v.toFixed(1)+'%',                  scheme:d3.interpolateReds},
-  renter:    {label:'Renter-occupied (%)',         fmt:v=>v.toFixed(1)+'%',                  scheme:d3.interpolatePurples},
-  age65:     {label:'Population age 65+ (%)',      fmt:v=>v.toFixed(1)+'%',                  scheme:d3.interpolateGreens},
-  nonwhite:  {label:'Non-white population (%)',    fmt:v=>v.toFixed(1)+'%',                  scheme:d3.interpolatePurples},
-  aian:      {label:'Amer. Indian/Alaska Native (%)',fmt:v=>v.toFixed(2)+'%',               scheme:d3.interpolateOranges},
-  hispanic:  {label:'Hispanic or Latino (%)',      fmt:v=>v.toFixed(1)+'%',                  scheme:d3.interpolateGreens},
-  black:     {label:'Black/African American (%)',  fmt:v=>v.toFixed(1)+'%',                  scheme:d3.interpolatePurples},
-  asian:     {label:'Asian (%)',                   fmt:v=>v.toFixed(1)+'%',                  scheme:d3.interpolateBlues},
-  lmi_pct:   {label:'LMI households (% below 80% AMI)', fmt:v=>v.toFixed(1)+'%',              scheme:d3.interpolateOranges, threshold:51},
-  vlmi_pct:  {label:'Very LMI households (% below 50% AMI)', fmt:v=>v.toFixed(1)+'%',        scheme:d3.interpolateReds,    threshold:51},
+var METRICS = {
+  income:     {label:'Median HH income',         fmt:function(v){return '$'+Math.round(v).toLocaleString();}, scheme:d3.interpolateBlues},
+  poverty:    {label:'Poverty rate (%)',          fmt:function(v){return v.toFixed(1)+'%';},                   scheme:d3.interpolateOranges},
+  lmi_pct:    {label:'LMI households (80% AMI)', fmt:function(v){return v.toFixed(1)+'%';},                   scheme:d3.interpolateOranges},
+  vlmi_pct:   {label:'Very LMI (50% AMI)',       fmt:function(v){return v.toFixed(1)+'%';},                   scheme:d3.interpolateReds},
+  no_internet:{label:'No internet access (%)',    fmt:function(v){return v.toFixed(1)+'%';},                   scheme:d3.interpolateReds},
+  unemployed: {label:'Unemployment rate (%)',     fmt:function(v){return v.toFixed(1)+'%';},                   scheme:d3.interpolateReds},
+  renter:     {label:'Renter-occupied (%)',       fmt:function(v){return v.toFixed(1)+'%';},                   scheme:d3.interpolatePurples},
+  age65:      {label:'Population age 65+ (%)',    fmt:function(v){return v.toFixed(1)+'%';},                   scheme:d3.interpolateGreens},
+  nonwhite:   {label:'Non-white population (%)',  fmt:function(v){return v.toFixed(1)+'%';},                   scheme:d3.interpolatePurples},
+  aian:       {label:'AIAN (%)',                  fmt:function(v){return v.toFixed(2)+'%';},                   scheme:d3.interpolateOranges},
+  hispanic:   {label:'Hispanic or Latino (%)',    fmt:function(v){return v.toFixed(1)+'%';},                   scheme:d3.interpolateGreens},
+  black:      {label:'Black/AA (%)',              fmt:function(v){return v.toFixed(1)+'%';},                   scheme:d3.interpolatePurples},
+  asian:      {label:'Asian (%)',                 fmt:function(v){return v.toFixed(1)+'%';},                   scheme:d3.interpolateBlues},
 };
 
-// HUD FY2022 80% AMI (4-person household) by MN county FIPS
-// Metro counties have higher limits; non-metro default ~$70,550
-const HUD_80_AMI = {
-  '053':95000,'123':95000,'037':95000,'003':95000,'139':95000,
-  '019':95000,'163':95000,'141':95000,'059':95000,'171':95000,
-  '109':87200, // Olmsted (Rochester MSA)
-  '137':74500,'017':74500, // St. Louis, Carlton (Duluth MSA)
-  '145':79200,'009':79200, // Stearns, Benton (St. Cloud MSA)
-  '027':79200, // Clay (Fargo MSA)
-  '035':72800, // Crow Wing (Brainerd MSA)
-};
-const HUD_80_AMI_DEFAULT = 70550; // Non-metro MN (4-person)
-// HUD FY2022 50% AMI (4-person household) — very low income
-const HUD_50_AMI = {
-  '053':59400,'123':59400,'037':59400,'003':59400,'139':59400,
-  '019':59400,'163':59400,'141':59400,'059':59400,'171':59400,
-  '109':54500,
-  '137':46550,'017':46550,
-  '145':49500,'009':49500,
-  '027':49500,
-  '035':45500,
-};
-const HUD_50_AMI_DEFAULT = 44100;
+var HUD80 = {'053':95000,'123':95000,'037':95000,'003':95000,'139':95000,'019':95000,'163':95000,'141':95000,'059':95000,'171':95000,'109':87200,'137':74500,'017':74500,'145':79200,'009':79200,'027':79200,'035':72800};
+var HUD50 = {'053':59400,'123':59400,'037':59400,'003':59400,'139':59400,'019':59400,'163':59400,'141':59400,'059':59400,'171':59400,'109':54500,'137':46550,'017':46550,'145':49500,'009':49500,'027':49500,'035':45500};
+var D80 = 70550, D50 = 44100;
 
-function getAMI80(fips){ return HUD_80_AMI[fips]||HUD_80_AMI_DEFAULT; }
-function getAMI50(fips){ return HUD_50_AMI[fips]||HUD_50_AMI_DEFAULT; }
+var CENT = {
+  '001':[46.60,-93.41],'003':[45.27,-93.24],'005':[46.93,-95.67],'007':[47.97,-94.89],
+  '009':[45.68,-93.97],'011':[45.40,-96.44],'013':[44.04,-94.07],'015':[44.20,-94.72],
+  '017':[46.59,-92.67],'019':[44.83,-93.79],'021':[47.05,-94.31],'023':[45.02,-95.90],
+  '025':[45.49,-92.90],'027':[46.89,-96.49],'029':[47.56,-95.39],'031':[47.82,-90.55],
+  '033':[44.00,-95.17],'035':[46.48,-94.07],'037':[44.67,-93.06],'039':[44.02,-92.85],
+  '041':[45.88,-95.45],'043':[43.67,-93.95],'045':[43.67,-92.09],'047':[43.67,-93.34],
+  '049':[44.41,-92.70],'051':[45.93,-96.01],'053':[44.97,-93.47],'055':[43.67,-91.47],
+  '057':[46.97,-94.92],'059':[45.55,-93.29],'061':[47.50,-93.62],'063':[43.67,-95.15],
+  '065':[45.96,-93.29],'067':[45.15,-94.98],'069':[48.78,-96.77],'071':[48.22,-93.77],
+  '073':[45.00,-96.17],'075':[47.42,-91.56],'077':[48.77,-94.88],'079':[44.37,-93.73],
+  '081':[44.40,-96.27],'083':[44.41,-95.84],'085':[44.83,-94.27],'087':[47.33,-95.83],
+  '089':[48.36,-96.73],'091':[43.67,-94.55],'093':[45.12,-94.52],'095':[46.12,-93.63],
+  '097':[46.02,-94.27],'099':[43.67,-92.69],'101':[44.02,-95.77],'103':[44.35,-94.25],
+  '105':[43.67,-95.77],'107':[47.33,-96.46],'109':[44.00,-92.47],'111':[46.42,-95.71],
+  '113':[48.07,-96.03],'115':[46.12,-92.72],'117':[44.02,-96.31],'119':[47.77,-96.41],
+  '121':[45.58,-95.57],'123':[44.99,-93.13],'125':[47.87,-96.07],'127':[44.41,-95.14],
+  '129':[44.79,-94.94],'131':[44.37,-93.30],'133':[43.67,-96.25],'135':[48.77,-95.80],
+  '137':[47.57,-92.46],'139':[44.64,-93.55],'141':[45.44,-93.77],'143':[44.57,-94.23],
+  '145':[45.55,-94.62],'147':[44.02,-93.23],'149':[45.57,-96.01],'151':[45.28,-95.83],
+  '153':[46.07,-94.90],'155':[45.77,-96.47],'157':[44.27,-92.21],'159':[46.57,-95.00],
+  '161':[44.02,-93.59],'163':[45.04,-92.89],'165':[43.99,-94.62],'167':[46.33,-96.47],
+  '169':[43.99,-91.76],'171':[45.17,-93.96],'173':[44.72,-95.85]
+};
 
-// Estimate households below an income threshold using B19001 brackets
-// Brackets: <10k,10-15,15-20,20-25,25-30,30-35,35-40,40-45,45-50,50-60,60-75,75-100,100-125,125-150,150-200,200+
-function hhBelowThreshold(g, threshold){
-  const brackets = [
-    [0,    10000,  g('B19001_002E')],
-    [10000,15000,  g('B19001_003E')],
-    [15000,20000,  g('B19001_004E')],
-    [20000,25000,  g('B19001_005E')],
-    [25000,30000,  g('B19001_006E')],
-    [30000,35000,  g('B19001_007E')],
-    [35000,40000,  g('B19001_008E')],
-    [40000,45000,  g('B19001_009E')],
-    [45000,50000,  g('B19001_010E')],
-    [50000,60000,  g('B19001_011E')],
-    [60000,75000,  g('B19001_012E')],
-    [75000,100000, g('B19001_013E')],
-    [100000,125000,g('B19001_014E')],
-    [125000,150000,g('B19001_015E')],
-    [150000,200000,g('B19001_016E')],
-    [200000,1e9,   g('B19001_017E')],
-  ];
-  let count = 0;
-  for(const [lo,hi,hh] of brackets){
-    if(threshold >= hi){ count += hh; }
-    else if(threshold > lo){ count += hh * (threshold-lo)/(hi-lo); }
+var sel = {}, bufMi = 30, lastData = null, sortK = 'income', sortD = -1;
+
+function haversine(lat1,lon1,lat2,lon2){
+  var R=3958.8, dLa=(lat2-lat1)*Math.PI/180, dLo=(lon2-lon1)*Math.PI/180;
+  var a=Math.sin(dLa/2)*Math.sin(dLa/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLo/2)*Math.sin(dLo/2);
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+function mi2deg(m){ return m/69; }
+
+function lmiCount(g, thresh){
+  var bks=[[0,10000,'B19001_002E'],[10000,15000,'B19001_003E'],[15000,20000,'B19001_004E'],
+    [20000,25000,'B19001_005E'],[25000,30000,'B19001_006E'],[30000,35000,'B19001_007E'],
+    [35000,40000,'B19001_008E'],[40000,45000,'B19001_009E'],[45000,50000,'B19001_010E'],
+    [50000,60000,'B19001_011E'],[60000,75000,'B19001_012E'],[75000,100000,'B19001_013E'],
+    [100000,125000,'B19001_014E'],[125000,150000,'B19001_015E'],[150000,200000,'B19001_016E'],
+    [200000,1e9,'B19001_017E']];
+  var n=0;
+  for(var i=0;i<bks.length;i++){
+    var lo=bks[i][0], hi=bks[i][1], hh=g(bks[i][2]);
+    if(thresh>=hi){ n+=hh; }
+    else if(thresh>lo){ n+=hh*(thresh-lo)/(hi-lo); break; }
     else break;
   }
-  return count;
+  return n;
 }
-
-const MN_COUNTY_CENTROIDS={
-  '001':[46.60,-93.41],  // Aitkin
-  '003':[45.27,-93.24],  // Anoka
-  '005':[46.93,-95.67],  // Becker
-  '007':[47.97,-94.89],  // Beltrami
-  '009':[45.68,-93.97],  // Benton
-  '011':[45.40,-96.44],  // Big Stone
-  '013':[44.04,-94.07],  // Blue Earth
-  '015':[44.20,-94.72],  // Brown
-  '017':[46.59,-92.67],  // Carlton
-  '019':[44.83,-93.79],  // Carver
-  '021':[47.05,-94.31],  // Cass
-  '023':[45.02,-95.90],  // Chippewa
-  '025':[45.49,-92.90],  // Chisago
-  '027':[46.89,-96.49],  // Clay
-  '029':[47.56,-95.39],  // Clearwater
-  '031':[47.82,-90.55],  // Cook
-  '033':[44.00,-95.17],  // Cottonwood
-  '035':[46.48,-94.07],  // Crow Wing
-  '037':[44.67,-93.06],  // Dakota
-  '039':[44.02,-92.85],  // Dodge
-  '041':[45.88,-95.45],  // Douglas
-  '043':[43.67,-93.95],  // Faribault
-  '045':[43.67,-92.09],  // Fillmore
-  '047':[43.67,-93.34],  // Freeborn
-  '049':[44.41,-92.70],  // Goodhue
-  '051':[45.93,-96.01],  // Grant
-  '053':[44.97,-93.47],  // Hennepin
-  '055':[43.67,-91.47],  // Houston
-  '057':[46.97,-94.92],  // Hubbard
-  '059':[45.55,-93.29],  // Isanti
-  '061':[47.50,-93.62],  // Itasca
-  '063':[43.67,-95.15],  // Jackson
-  '065':[45.96,-93.29],  // Kanabec
-  '067':[45.15,-94.98],  // Kandiyohi
-  '069':[48.78,-96.77],  // Kittson
-  '071':[48.22,-93.77],  // Koochiching
-  '073':[45.00,-96.17],  // Lac qui Parle
-  '075':[47.42,-91.56],  // Lake
-  '077':[48.77,-94.88],  // Lake of the Woods
-  '079':[44.37,-93.73],  // Le Sueur
-  '081':[44.40,-96.27],  // Lincoln
-  '083':[44.41,-95.84],  // Lyon
-  '085':[44.83,-94.27],  // McLeod
-  '087':[47.33,-95.83],  // Mahnomen
-  '089':[48.36,-96.73],  // Marshall
-  '091':[43.67,-94.55],  // Martin
-  '093':[45.12,-94.52],  // Meeker
-  '095':[46.12,-93.63],  // Mille Lacs
-  '097':[46.02,-94.27],  // Morrison
-  '099':[43.67,-92.69],  // Mower
-  '101':[44.02,-95.77],  // Murray
-  '103':[44.35,-94.25],  // Nicollet
-  '105':[43.67,-95.77],  // Nobles
-  '107':[47.33,-96.46],  // Norman
-  '109':[44.00,-92.47],  // Olmsted
-  '111':[46.42,-95.71],  // Otter Tail
-  '113':[48.07,-96.03],  // Pennington
-  '115':[46.12,-92.72],  // Pine
-  '117':[44.02,-96.31],  // Pipestone
-  '119':[47.77,-96.41],  // Polk
-  '121':[45.58,-95.57],  // Pope
-  '123':[44.99,-93.13],  // Ramsey
-  '125':[47.87,-96.07],  // Red Lake
-  '127':[44.41,-95.14],  // Redwood
-  '129':[44.79,-94.94],  // Renville
-  '131':[44.37,-93.30],  // Rice
-  '133':[43.67,-96.25],  // Rock
-  '135':[48.77,-95.80],  // Roseau
-  '137':[47.57,-92.46],  // St. Louis
-  '139':[44.64,-93.55],  // Scott
-  '141':[45.44,-93.77],  // Sherburne
-  '143':[44.57,-94.23],  // Sibley
-  '145':[45.55,-94.62],  // Stearns
-  '147':[44.02,-93.23],  // Steele
-  '149':[45.57,-96.01],  // Stevens
-  '151':[45.28,-95.83],  // Swift
-  '153':[46.07,-94.90],  // Todd
-  '155':[45.77,-96.47],  // Traverse
-  '157':[44.27,-92.21],  // Wabasha
-  '159':[46.57,-95.00],  // Wadena
-  '161':[44.02,-93.59],  // Waseca
-  '163':[45.04,-92.89],  // Washington
-  '165':[43.99,-94.62],  // Watonwan
-  '167':[46.33,-96.47],  // Wilkin
-  '169':[43.99,-91.76],  // Winona
-  '171':[45.17,-93.96],  // Wright
-  '173':[44.72,-95.85],  // Yellow Medicine
-};
-
-let selected=new Set(), bufferMiles=30, lastResults=null, sortCol='income', sortDir=-1;
 
 function buildSidebar(){
-  const el=document.getElementById('sitesList'); el.innerHTML='';
-  REGIONS.forEach(region=>{
-    const sites=SITES.filter(s=>s.region===region);
-    const grp=document.createElement('div'); grp.className='region-group';
-    grp.innerHTML=`<div class="region-label">${region}</div>`;
-    sites.forEach(site=>{
-      const item=document.createElement('div');
-      item.className='site-item'+(selected.has(site.id)?' checked':'');
-      item.id='item-'+site.id;
-      const dots=site.svcs.map(s=>`<span class="svc-dot" style="background:${SVC_COLOR[s]}"></span>`).join('');
-      item.innerHTML=`<input type="checkbox" ${selected.has(site.id)?'checked':''}><div><div class="site-name">${site.city}</div><div class="site-call">${site.calls.join(' · ')}</div></div><div class="svc-dots">${dots}</div>`;
-      item.querySelector('input').addEventListener('change',e=>toggleSite(site.id,e.target.checked));
-      grp.appendChild(item);
-    });
+  var el=document.getElementById('slist');
+  el.innerHTML='';
+  for(var ri=0;ri<REGIONS.length;ri++){
+    var region=REGIONS[ri];
+    var sites=SITES.filter(function(s){return s.region===region;});
+    var grp=document.createElement('div');
+    grp.className='rgrp';
+    var lbl=document.createElement('div');
+    lbl.className='rlbl';
+    lbl.textContent=region;
+    grp.appendChild(lbl);
+    for(var si=0;si<sites.length;si++){
+      var site=sites[si];
+      (function(site){
+        var item=document.createElement('div');
+        item.className='si'+(sel[site.id]?' on':'');
+        item.id='i-'+site.id;
+        var cb=document.createElement('input');
+        cb.type='checkbox';
+        cb.checked=!!sel[site.id];
+        cb.addEventListener('change',function(e){ toggle(site.id,e.target.checked); });
+        var info=document.createElement('div');
+        var nm=document.createElement('div'); nm.className='sn'; nm.textContent=site.city;
+        var cl=document.createElement('div'); cl.className='sc'; cl.textContent=site.calls.join(' · ');
+        info.appendChild(nm); info.appendChild(cl);
+        var dots=document.createElement('div'); dots.className='sdots';
+        for(var di=0;di<site.svcs.length;di++){
+          var d=document.createElement('span'); d.className='sd';
+          d.style.background=SVC_COLOR[site.svcs[di]];
+          dots.appendChild(d);
+        }
+        item.appendChild(cb); item.appendChild(info); item.appendChild(dots);
+        grp.appendChild(item);
+      })(site);
+    }
     el.appendChild(grp);
-  });
+  }
 }
-function toggleSite(id,checked){checked?selected.add(id):selected.delete(id);const el=document.getElementById('item-'+id);if(el)el.className='site-item'+(checked?' checked':'');updateCount();}
-function updateCount(){document.getElementById('siteCount').textContent=`${selected.size} site${selected.size!==1?'s':''} selected`;}
-function selectAll(){SITES.forEach(s=>{selected.add(s.id);const el=document.getElementById('item-'+s.id);if(el){el.className='site-item checked';el.querySelector('input').checked=true;}});updateCount();}
-function clearAll(){SITES.forEach(s=>{selected.delete(s.id);const el=document.getElementById('item-'+s.id);if(el){el.className='site-item';el.querySelector('input').checked=false;}});updateCount();}
-document.getElementById('bufferRange').addEventListener('input',function(){bufferMiles=+this.value;document.getElementById('bufferVal').textContent=bufferMiles+' mi';});
-document.getElementById('metricSelect').addEventListener('change',()=>{if(lastResults)redrawMap(SITES.filter(s=>selected.has(s.id)),lastResults);});
-function showTab(t){document.querySelectorAll('.tab').forEach((x,i)=>x.classList.toggle('active',['map','data'][i]===t));document.querySelectorAll('.panel').forEach((x,i)=>x.classList.toggle('active',['panel-map','panel-data'][i]==='panel-'+t));}
 
-function pointInCircle(lat,lon,cLat,cLon,mi){
-  const R=3958.8,dLa=(lat-cLat)*Math.PI/180,dLo=(lon-cLon)*Math.PI/180;
-  const a=Math.sin(dLa/2)**2+Math.cos(cLat*Math.PI/180)*Math.cos(lat*Math.PI/180)*Math.sin(dLo/2)**2;
-  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))<=mi;
+function toggle(id,checked){
+  if(checked) sel[id]=true; else delete sel[id];
+  var el=document.getElementById('i-'+id);
+  if(el) el.className='si'+(checked?' on':'');
+  updCount();
 }
-function milesToDeg(m){return m/69;}
+function updCount(){
+  var n=Object.keys(sel).length;
+  document.getElementById('sct').textContent=n+' site'+(n!==1?'s':'')+' selected';
+}
+function selAll(){ SITES.forEach(function(s){ sel[s.id]=true; var el=document.getElementById('i-'+s.id); if(el){el.className='si on';el.querySelector('input').checked=true;} }); updCount(); }
+function selNone(){ SITES.forEach(function(s){ delete sel[s.id]; var el=document.getElementById('i-'+s.id); if(el){el.className='si';el.querySelector('input').checked=false;} }); updCount(); }
 
-async function fetchCensusData(selectedSites,radiusMi){
-  const url=`https://api.census.gov/data/2022/acs/acs5?get=NAME,${CENSUS_VARS}&for=county:*&in=state:27&key=${CENSUS_KEY}`;
-  const resp=await fetch(url);
-  if(!resp.ok){const txt=await resp.text();throw new Error(`Census API ${resp.status}: ${txt.slice(0,200)}`);}
-  const raw=await resp.json();
-  const h=raw[0];
-  function idx(v){return h.indexOf(v);}
-  const results=[];
-  raw.slice(1).forEach(row=>{
-    function g(v){const i=idx(v);return i>=0?parseFloat(row[i])||0:0;}
-    const fips=row[idx('county')];
-    const name=row[idx('NAME')].replace(', Minnesota','');
-    const centroid=MN_COUNTY_CENTROIDS[fips];
-    if(!centroid)return;
-    const matchedSites=selectedSites.filter(s=>pointInCircle(centroid[0],centroid[1],s.lat,s.lon,radiusMi));
-    if(!matchedSites.length)return;
-    const pop=g('B01003_001E');
-    const race_u=g('B03002_001E'), white_nh=g('B03002_003E');
-    const m65=g('B01001_020E')+g('B01001_021E')+g('B01001_022E')+g('B01001_025E');
-    const f65=g('B01001_044E')+g('B01001_045E')+g('B01001_046E')+g('B01001_049E');
-    const pov_u=g('B17001_001E');
-    const total_hh = g('B19001_001E');
-    const ami80 = getAMI80(fips);
-    const ami50 = getAMI50(fips);
-    const hh_lmi  = total_hh>0 ? hhBelowThreshold(g, ami80) : 0;
-    const hh_vlmi = total_hh>0 ? hhBelowThreshold(g, ami50) : 0;
+document.getElementById('bufR').addEventListener('input',function(){
+  bufMi=+this.value;
+  document.getElementById('bufV').textContent=bufMi+' mi';
+});
+document.getElementById('metSel').addEventListener('change',function(){
+  if(lastData) drawMap(SITES.filter(function(s){return sel[s.id];}), lastData);
+});
+
+function showTab(t){
+  document.querySelectorAll('.tab').forEach(function(x,i){x.className='tab'+((['map','data'][i]===t)?' on':'');});
+  document.querySelectorAll('.panel').forEach(function(x,i){x.className='panel'+((['pm','pd'][i]==='p'+t.charAt(0))?' on':'');});
+}
+
+async function run(){
+  var ids=Object.keys(sel);
+  if(!ids.length){ alert('Please select at least one site.'); return; }
+  var sites=SITES.filter(function(s){return sel[s.id];});
+  showTab('map');
+  document.getElementById('me').style.display='none';
+  document.getElementById('ms').style.display='none';
+  document.getElementById('leg').style.display='none';
+  var mc=document.getElementById('mc');
+  var ld=document.getElementById('ld');
+  if(!ld){
+    ld=document.createElement('div'); ld.id='ld'; ld.className='ls2';
+    ld.innerHTML='<div class="sp"></div><span style="font-size:11px">Fetching Census ACS 2022 data&hellip;</span>';
+    mc.appendChild(ld);
+  }
+  ld.style.display='flex';
+  document.getElementById('dc').innerHTML='<div class="ls2" style="height:200px"><div class="sp"></div></div>';
+  try {
+    var data = await fetchData(sites, bufMi);
+    lastData=data; ld.style.display='none';
+    drawMap(sites,data);
+    drawTable(sites,data);
+  } catch(e) {
+    ld.style.display='none';
+    document.getElementById('me').style.display='flex';
+    document.getElementById('me').innerHTML='<div style="font-size:22px;opacity:.3">!</div><div style="color:#A32D2D;font-family:var(--mono);font-size:11px;text-align:center;max-width:300px">'+e.message+'</div>';
+    document.getElementById('dc').innerHTML='<div class="eb">'+e.message+'</div>';
+  }
+}
+
+async function fetchData(sites, radius){
+  var url='https://api.census.gov/data/2022/acs/acs5?get=NAME,'+CENSUS_VARS+'&for=county:*&in=state:27&key='+CENSUS_KEY;
+  var resp=await fetch(url);
+  if(!resp.ok){ var t=await resp.text(); throw new Error('Census API '+resp.status+': '+t.slice(0,150)); }
+  var raw=await resp.json();
+  var h=raw[0];
+  function idx(v){ return h.indexOf(v); }
+  var results=[];
+  for(var i=1;i<raw.length;i++){
+    var row=raw[i];
+    function g(v){ var j=idx(v); return j>=0?parseFloat(row[j])||0:0; }
+    var fips=row[idx('county')];
+    var name=row[idx('NAME')].replace(', Minnesota','');
+    var cent=CENT[fips]; if(!cent) continue;
+    var matched=sites.filter(function(s){ return haversine(cent[0],cent[1],s.lat,s.lon)<=radius; });
+    if(!matched.length) continue;
+    var pop=g('B01003_001E');
+    var ru=g('B03002_001E'), wnh=g('B03002_003E');
+    var m65=g('B01001_020E')+g('B01001_021E')+g('B01001_022E')+g('B01001_025E');
+    var f65=g('B01001_044E')+g('B01001_045E')+g('B01001_046E')+g('B01001_049E');
+    var pu=g('B17001_001E');
+    var thu=g('B19001_001E');
+    var ami80=HUD80[fips]||D80;
+    var ami50=HUD50[fips]||D50;
+    var hlmi=thu>0?lmiCount(g,ami80):0;
+    var hvlmi=thu>0?lmiCount(g,ami50):0;
+    var lp=thu>0?hlmi/thu*100:null;
     results.push({
-      name, fips, sites:matchedSites.map(s=>s.city),
-      pop:          Math.round(pop),
-      income:       g('B19013_001E')||null,
-      poverty:      pov_u>0?g('B17001_002E')/pov_u*100:null,
-      age65:        pop>0?(m65+f65)/pop*100:null,
-      no_internet:  g('B28002_001E')>0?g('B28002_013E')/g('B28002_001E')*100:null,
-      unemployed:   g('B23025_003E')>0?g('B23025_005E')/g('B23025_003E')*100:null,
-      renter:       g('B25003_001E')>0?g('B25003_003E')/g('B25003_001E')*100:null,
-      nonwhite:     race_u>0?(race_u-white_nh)/race_u*100:null,
-      aian:         race_u>0?g('B03002_005E')/race_u*100:null,
-      hispanic:     race_u>0?g('B03002_012E')/race_u*100:null,
-      black:        race_u>0?g('B03002_004E')/race_u*100:null,
-      asian:        race_u>0?g('B03002_006E')/race_u*100:null,
-      lmi_pct:      total_hh>0?hh_lmi/total_hh*100:null,
-      vlmi_pct:     total_hh>0?hh_vlmi/total_hh*100:null,
-      lmi_pass:     total_hh>0?(hh_lmi/total_hh*100>=51?'✓ Pass':'✗ Fail'):'—',
-      lmi_hh:       Math.round(hh_lmi),
-      vlmi_hh:      Math.round(hh_vlmi),
-      total_hh:     Math.round(total_hh),
-      ami80,
+      name:name, fips:fips, sites:matched.map(function(s){return s.city;}),
+      pop:Math.round(pop),
+      income:g('B19013_001E')||null,
+      poverty:pu>0?g('B17001_002E')/pu*100:null,
+      age65:pop>0?(m65+f65)/pop*100:null,
+      no_internet:g('B28002_001E')>0?g('B28002_013E')/g('B28002_001E')*100:null,
+      unemployed:g('B23025_003E')>0?g('B23025_005E')/g('B23025_003E')*100:null,
+      renter:g('B25003_001E')>0?g('B25003_003E')/g('B25003_001E')*100:null,
+      nonwhite:ru>0?(ru-wnh)/ru*100:null,
+      aian:ru>0?g('B03002_005E')/ru*100:null,
+      hispanic:ru>0?g('B03002_012E')/ru*100:null,
+      black:ru>0?g('B03002_004E')/ru*100:null,
+      asian:ru>0?g('B03002_006E')/ru*100:null,
+      lmi_pct:lp,
+      vlmi_pct:thu>0?hvlmi/thu*100:null,
+      lmi_hh:Math.round(hlmi),
+      total_hh:Math.round(thu),
+      ami80:ami80,
+      lmi_pass:lp!=null?(lp>=51?'Pass':'Fail'):'—',
     });
-  });
+  }
   return results;
 }
 
-async function runAnalysis(){
-  if(!selected.size){alert('Please select at least one site.');return;}
-  const selectedSites=SITES.filter(s=>selected.has(s.id));
-  showTab('map');
-  document.getElementById('mapEmpty').style.display='none';
-  document.getElementById('mapSvg').style.display='none';
-  document.getElementById('mapLegend').style.display='none';
-  const container=document.getElementById('mapContainer');
-  let ld=document.getElementById('mapLoading');
-  if(!ld){ld=document.createElement('div');ld.id='mapLoading';ld.className='loading-state';ld.innerHTML='<div class="spinner"></div><span style="font-size:11px">Fetching Census ACS 2022 data…</span>';container.appendChild(ld);}
-  ld.style.display='flex';
-  document.getElementById('dataContent').innerHTML='<div class="loading-state" style="height:200px"><div class="spinner"></div></div>';
-  try{
-    const data=await fetchCensusData(selectedSites,bufferMiles);
-    lastResults=data; ld.style.display='none';
-    redrawMap(selectedSites,data);
-    renderTable(selectedSites,data);
-  }catch(e){
-    ld.style.display='none';
-    document.getElementById('mapEmpty').style.display='flex';
-    document.getElementById('mapEmpty').innerHTML=`<div style="font-size:22px;opacity:.3">!</div><div style="color:#A32D2D;font-family:var(--mono);font-size:11px;text-align:center;max-width:300px">${e.message}</div>`;
-    document.getElementById('dataContent').innerHTML=`<div class="error-box">${e.message}</div>`;
-  }
-}
-
-function redrawMap(selectedSites,data){
-  const mk=document.getElementById('metricSelect').value;
-  const mc=METRIC_CONFIG[mk];
-  const svgEl=document.getElementById('mapSvg'); svgEl.style.display='block';
-  const container=document.getElementById('mapContainer');
-  const W=container.offsetWidth||700, H=container.offsetHeight||440;
-  svgEl.setAttribute('viewBox',`0 0 ${W} ${H}`);
-  const svg=d3.select('#mapSvg'); svg.selectAll('*').remove();
-  const proj=d3.geoMercator().center([-93.0,46.2]).scale(3800*(W/740)).translate([W/2,H/2]);
-  const path=d3.geoPath(proj);
-  const vals=data.map(c=>c[mk]).filter(v=>v!=null);
-  const vMin=d3.min(vals)||0, vMax=d3.max(vals)||1;
-  const colorScale=d3.scaleSequential([vMin,vMax],mc.scheme);
-  d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json').then(us=>{
-    const mnF=topojson.feature(us,us.objects.counties).features.filter(f=>String(f.id).padStart(5,'0').startsWith('27'));
+function drawMap(sites, data){
+  var mk=document.getElementById('metSel').value;
+  var mc2=METRICS[mk];
+  var svgEl=document.getElementById('ms'); svgEl.style.display='block';
+  var cont=document.getElementById('mc');
+  var W=cont.offsetWidth||700, H=cont.offsetHeight||440;
+  svgEl.setAttribute('viewBox','0 0 '+W+' '+H);
+  var svg=d3.select('#ms'); svg.selectAll('*').remove();
+  var proj=d3.geoMercator().center([-93.0,46.2]).scale(3800*(W/740)).translate([W/2,H/2]);
+  var path=d3.geoPath(proj);
+  var vals=data.map(function(c){return c[mk];}).filter(function(v){return v!=null;});
+  var vMin=d3.min(vals)||0, vMax=d3.max(vals)||1;
+  var cs=d3.scaleSequential([vMin,vMax],mc2.scheme);
+  var tip=document.getElementById('tip');
+  d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json').then(function(us){
+    var mnF=topojson.feature(us,us.objects.counties).features.filter(function(f){return String(f.id).padStart(5,'0').startsWith('27');});
     svg.selectAll('.co').data(mnF).join('path').attr('d',path)
-      .attr('fill',d=>{const fips=String(d.id).padStart(5,'0').slice(2);const cd=data.find(c=>c.fips===fips);return cd&&cd[mk]!=null?colorScale(cd[mk]):'#d4d0c8';})
+      .attr('fill',function(d){
+        var fips=String(d.id).padStart(5,'0').slice(2);
+        var cd=data.find(function(c){return c.fips===fips;});
+        return cd&&cd[mk]!=null?cs(cd[mk]):'#d4d0c8';
+      })
       .attr('stroke','#fff').attr('stroke-width',0.5)
       .on('mousemove',function(e,d){
-        const fips=String(d.id).padStart(5,'0').slice(2);
-        const cd=data.find(c=>c.fips===fips); if(!cd)return;
-        const tip=document.getElementById('mapTip');
+        var fips=String(d.id).padStart(5,'0').slice(2);
+        var cd=data.find(function(c){return c.fips===fips;});
+        if(!cd) return;
         tip.style.display='block';
-        tip.style.left=Math.min(e.offsetX+14,W-240)+'px';
+        tip.style.left=Math.min(e.offsetX+14,W-250)+'px';
         tip.style.top=Math.max(e.offsetY-10,4)+'px';
-        const fmt=(v,fn)=>v!=null?fn(v):'—';
-        tip.innerHTML=`<strong>${cd.name} County</strong>
-          <div class="tip-section">Economic</div>
-          <div class="tip-row"><span class="tip-label">Population</span><span class="tip-val">${cd.pop.toLocaleString()}</span></div>
-          <div class="tip-row"><span class="tip-label">Median income</span><span class="tip-val">${fmt(cd.income,v=>'$'+Math.round(v).toLocaleString())}</span></div>
-          <div class="tip-row"><span class="tip-label">Poverty rate</span><span class="tip-val">${fmt(cd.poverty,v=>v.toFixed(1)+'%')}</span></div>
-          <div class="tip-row"><span class="tip-label">Unemployment</span><span class="tip-val">${fmt(cd.unemployed,v=>v.toFixed(1)+'%')}</span></div>
-          <div class="tip-row"><span class="tip-label">No internet</span><span class="tip-val">${fmt(cd.no_internet,v=>v.toFixed(1)+'%')}</span></div>
-          <div class="tip-row"><span class="tip-label">Renter-occ.</span><span class="tip-val">${fmt(cd.renter,v=>v.toFixed(1)+'%')}</span></div>
-          <div class="tip-row"><span class="tip-label">Age 65+</span><span class="tip-val">${fmt(cd.age65,v=>v.toFixed(1)+'%')}</span></div>
-          <div class="tip-section">Race / Ethnicity</div>
-          <div class="tip-row"><span class="tip-label">Non-white</span><span class="tip-val">${fmt(cd.nonwhite,v=>v.toFixed(1)+'%')}</span></div>
-          <div class="tip-row"><span class="tip-label">AIAN</span><span class="tip-val">${fmt(cd.aian,v=>v.toFixed(2)+'%')}</span></div>
-          <div class="tip-row"><span class="tip-label">Hispanic/Latino</span><span class="tip-val">${fmt(cd.hispanic,v=>v.toFixed(1)+'%')}</span></div>
-          <div class="tip-row"><span class="tip-label">Black/AA</span><span class="tip-val">${fmt(cd.black,v=>v.toFixed(1)+'%')}</span></div>
-          <div class="tip-row"><span class="tip-label">Asian</span><span class="tip-val">${fmt(cd.asian,v=>v.toFixed(1)+'%')}</span></div>
-          <div class="tip-section">HUD LMI (80% AMI = $${cd.ami80.toLocaleString()})</div>
-          <div class="tip-row"><span class="tip-label">51% threshold</span><span class="tip-val" style="color:${cd.lmi_pass&&cd.lmi_pass.includes('✓')?'#3B6D11':'#A32D2D'}">${cd.lmi_pass||'—'}</span></div>
-          <div class="tip-row"><span class="tip-label">LMI households</span><span class="tip-val">${fmt(cd.lmi_pct,v=>v.toFixed(1)+'%')}</span></div>
-          <div class="tip-row"><span class="tip-label">LMI count</span><span class="tip-val">${cd.lmi_hh!=null?cd.lmi_hh.toLocaleString():'—'}</span></div>
-          <div class="tip-row"><span class="tip-label">Very LMI (50% AMI)</span><span class="tip-val">${fmt(cd.vlmi_pct,v=>v.toFixed(1)+'%')}</span></div>
-          <div style="margin-top:5px;font-size:9px;color:var(--ink3)">${cd.sites.join(', ')}</div>\`;
+        function fmt(v,fn){return v!=null?fn(v):'&mdash;';}
+        var passColor=cd.lmi_pass==='Pass'?'#3B6D11':'#A32D2D';
+        tip.innerHTML='<strong>'+cd.name+' County</strong>'+
+          '<div class="ts">Economic</div>'+
+          '<div class="tr"><span class="tl">Population</span><span class="tv">'+cd.pop.toLocaleString()+'</span></div>'+
+          '<div class="tr"><span class="tl">Median income</span><span class="tv">'+fmt(cd.income,function(v){return '$'+Math.round(v).toLocaleString();})+'</span></div>'+
+          '<div class="tr"><span class="tl">Poverty rate</span><span class="tv">'+fmt(cd.poverty,function(v){return v.toFixed(1)+'%';})+'</span></div>'+
+          '<div class="tr"><span class="tl">Unemployment</span><span class="tv">'+fmt(cd.unemployed,function(v){return v.toFixed(1)+'%';})+'</span></div>'+
+          '<div class="tr"><span class="tl">No internet</span><span class="tv">'+fmt(cd.no_internet,function(v){return v.toFixed(1)+'%';})+'</span></div>'+
+          '<div class="tr"><span class="tl">Renter-occ.</span><span class="tv">'+fmt(cd.renter,function(v){return v.toFixed(1)+'%';})+'</span></div>'+
+          '<div class="tr"><span class="tl">Age 65+</span><span class="tv">'+fmt(cd.age65,function(v){return v.toFixed(1)+'%';})+'</span></div>'+
+          '<div class="ts">Race / Ethnicity</div>'+
+          '<div class="tr"><span class="tl">Non-white</span><span class="tv">'+fmt(cd.nonwhite,function(v){return v.toFixed(1)+'%';})+'</span></div>'+
+          '<div class="tr"><span class="tl">AIAN</span><span class="tv">'+fmt(cd.aian,function(v){return v.toFixed(2)+'%';})+'</span></div>'+
+          '<div class="tr"><span class="tl">Hispanic/Latino</span><span class="tv">'+fmt(cd.hispanic,function(v){return v.toFixed(1)+'%';})+'</span></div>'+
+          '<div class="tr"><span class="tl">Black/AA</span><span class="tv">'+fmt(cd.black,function(v){return v.toFixed(1)+'%';})+'</span></div>'+
+          '<div class="ts">HUD LMI (80% AMI = $'+cd.ami80.toLocaleString()+')</div>'+
+          '<div class="tr"><span class="tl">51% threshold</span><span class="tv" style="color:'+passColor+'">'+cd.lmi_pass+'</span></div>'+
+          '<div class="tr"><span class="tl">LMI households</span><span class="tv">'+fmt(cd.lmi_pct,function(v){return v.toFixed(1)+'%';})+'</span></div>'+
+          '<div class="tr"><span class="tl">LMI count</span><span class="tv">'+(cd.lmi_hh!=null?cd.lmi_hh.toLocaleString():'&mdash;')+'</span></div>'+
+          '<div style="margin-top:5px;font-size:9px;color:var(--ink3)">'+cd.sites.join(', ')+'</div>';
       })
-      .on('mouseleave',()=>{document.getElementById('mapTip').style.display='none';});
-    selectedSites.forEach(site=>{
-      const [cx,cy]=proj([site.lon,site.lat]);
-      const r=Math.abs(proj([site.lon+milesToDeg(bufferMiles),site.lat])[0]-cx);
-      svg.append('circle').attr('cx',cx).attr('cy',cy).attr('r',r).attr('fill','rgba(24,95,165,0.06)').attr('stroke','rgba(24,95,165,0.35)').attr('stroke-width',1).attr('stroke-dasharray','5,3');
+      .on('mouseleave',function(){ tip.style.display='none'; });
+    sites.forEach(function(site){
+      var xy=proj([site.lon,site.lat]);
+      var cx=xy[0], cy=xy[1];
+      var ex=proj([site.lon+mi2deg(bufMi),site.lat]);
+      var r=Math.abs(ex[0]-cx);
+      svg.append('circle').attr('cx',cx).attr('cy',cy).attr('r',r)
+        .attr('fill','rgba(24,95,165,0.06)').attr('stroke','rgba(24,95,165,0.35)').attr('stroke-width',1).attr('stroke-dasharray','5,3');
     });
-    selectedSites.forEach(site=>{
-      const [cx,cy]=proj([site.lon,site.lat]);
-      svg.append('circle').attr('cx',cx).attr('cy',cy).attr('r',site.flagship?9:6).attr('fill',site.flagship?'#533AB7':'#185FA5').attr('stroke','#fff').attr('stroke-width',2);
-      svg.append('text').attr('x',cx).attr('y',cy-12).attr('text-anchor','middle').attr('font-size',9).attr('font-family',"'IBM Plex Mono',monospace").attr('fill','#1a1a1a').attr('font-weight',500).text(site.city.split('/')[0]);
+    sites.forEach(function(site){
+      var xy=proj([site.lon,site.lat]);
+      svg.append('circle').attr('cx',xy[0]).attr('cy',xy[1]).attr('r',site.flagship?9:6)
+        .attr('fill',site.flagship?'#533AB7':'#185FA5').attr('stroke','#fff').attr('stroke-width',2);
+      svg.append('text').attr('x',xy[0]).attr('y',xy[1]-12).attr('text-anchor','middle')
+        .attr('font-size',9).attr('font-family','IBM Plex Mono,monospace').attr('fill','#1a1a1a').attr('font-weight',500)
+        .text(site.city.split('/')[0]);
     });
-    const bar=document.getElementById('legendBar'); bar.innerHTML='';
-    for(let i=0;i<8;i++){const s=document.createElement('div');s.className='legend-seg';s.style.background=colorScale(vMin+(vMax-vMin)*(i/7));bar.appendChild(s);}
-    document.getElementById('legendTitle').textContent=mc.label;
-    document.getElementById('legendLow').textContent=mc.fmt(vMin);
-    document.getElementById('legendHigh').textContent=mc.fmt(vMax);
-    document.getElementById('mapLegend').style.display='flex';
+    var bar=document.getElementById('lb'); bar.innerHTML='';
+    for(var i=0;i<8;i++){
+      var seg=document.createElement('div'); seg.className='ls';
+      seg.style.background=cs(vMin+(vMax-vMin)*(i/7));
+      bar.appendChild(seg);
+    }
+    document.getElementById('lt').textContent=mc2.label;
+    document.getElementById('ll').textContent=mc2.fmt(vMin);
+    document.getElementById('lh').textContent=mc2.fmt(vMax);
+    document.getElementById('leg').style.display='flex';
   });
 }
 
-function renderTable(selectedSites,data){
-  if(!data.length){document.getElementById('dataContent').innerHTML='<div class="empty-state"><div class="empty-icon">▦</div><div>No counties in range.</div></div>';return;}
-  const totalPop=data.reduce((s,c)=>s+c.pop,0);
-  const wavg=(key)=>{const v=data.filter(c=>c[key]!=null);return v.length?v.reduce((s,c)=>s+c[key]*c.pop,0)/v.reduce((s,c)=>s+c.pop,0):null;};
-  const cols=[
-    {key:'name',       label:'County',          fmt:v=>v,                                         sort:true},
-    {key:'income',     label:'Med. Income',     fmt:v=>v?'$'+Math.round(v).toLocaleString():'—',  sort:true},
-    {key:'poverty',    label:'Poverty %',       fmt:v=>v!=null?v.toFixed(1)+'%':'—',              sort:true, bar:true},
-    {key:'unemployed', label:'Unemp. %',        fmt:v=>v!=null?v.toFixed(1)+'%':'—',              sort:true, bar:true},
-    {key:'no_internet',label:'No Internet %',   fmt:v=>v!=null?v.toFixed(1)+'%':'—',              sort:true, bar:true},
-    {key:'renter',     label:'Renter %',        fmt:v=>v!=null?v.toFixed(1)+'%':'—',              sort:true, bar:true},
-    {key:'age65',      label:'Age 65+ %',       fmt:v=>v!=null?v.toFixed(1)+'%':'—',              sort:true, bar:true},
-    {key:'nonwhite',   label:'Non-white %',     fmt:v=>v!=null?v.toFixed(1)+'%':'—',              sort:true, bar:true},
-    {key:'aian',       label:'AIAN %',          fmt:v=>v!=null?v.toFixed(2)+'%':'—',              sort:true, bar:true},
-    {key:'hispanic',   label:'Hispanic %',      fmt:v=>v!=null?v.toFixed(1)+'%':'—',              sort:true, bar:true},
-    {key:'black',      label:'Black/AA %',      fmt:v=>v!=null?v.toFixed(1)+'%':'—',              sort:true, bar:true},
-    {key:'asian',      label:'Asian %',         fmt:v=>v!=null?v.toFixed(1)+'%':'—',              sort:true, bar:true},
-    {key:'lmi_pass',   label:'51% Test',        fmt:v=>v,                                         sort:true},
-    {key:'lmi_pct',    label:'LMI % (80% AMI)', fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
-    {key:'vlmi_pct',   label:'Very LMI % (50%)',fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
-    {key:'lmi_hh',     label:'LMI Households',  fmt:v=>v!=null?v.toLocaleString():'—',            sort:true},
-    {key:'ami80',      label:'80% AMI ($)',      fmt:v=>v?'$'+v.toLocaleString():'—',             sort:true},
-    {key:'pop',        label:'Population',      fmt:v=>v.toLocaleString(),                         sort:true},
-    {key:'sites',      label:'Sites',           fmt:v=>v.join(', '),                               sort:false},
+function drawTable(sites, data){
+  if(!data.length){ document.getElementById('dc').innerHTML='<div class="es"><div class="ei">&#9638;</div><div>No counties in range.</div></div>'; return; }
+  var totalPop=data.reduce(function(s,c){return s+c.pop;},0);
+  function wavg(k){ var v=data.filter(function(c){return c[k]!=null;}); return v.length?v.reduce(function(s,c){return s+c[k]*c.pop;},0)/v.reduce(function(s,c){return s+c.pop;},0):null; }
+  var wi=wavg('income'), wp=wavg('poverty'), wl=wavg('lmi_pct');
+  var lpass=wl!=null&&wl>=51;
+  var lbg=wl==null?'var(--paper2)':lpass?'#EAF3DE':'#FCEBEB';
+  var lbc=wl==null?'#d0cdc5':lpass?'#3B6D11':'#A32D2D';
+  var lnote=wl==null?'':lpass?'<span style="color:#3B6D11;font-size:9px">&#10003; Meets 51% threshold</span>':'<span style="color:#A32D2D;font-size:9px">&#10007; Below 51% threshold</span>';
+
+  var cols=[
+    {k:'name',     lb:'County',          bar:false, special:'name'},
+    {k:'income',   lb:'Med. Income',     bar:false, fmt:function(v){return v?'$'+Math.round(v).toLocaleString():'&mdash;';}},
+    {k:'lmi_pass', lb:'51% Test',        bar:false, special:'pass'},
+    {k:'lmi_pct',  lb:'LMI % (80% AMI)',bar:true,  fmt:function(v){return v!=null?v.toFixed(1)+'%':'&mdash;';}},
+    {k:'vlmi_pct', lb:'Very LMI % (50%)',bar:true, fmt:function(v){return v!=null?v.toFixed(1)+'%':'&mdash;';}},
+    {k:'poverty',  lb:'Poverty %',       bar:true,  fmt:function(v){return v!=null?v.toFixed(1)+'%':'&mdash;';}},
+    {k:'unemployed',lb:'Unemp. %',       bar:true,  fmt:function(v){return v!=null?v.toFixed(1)+'%':'&mdash;';}},
+    {k:'no_internet',lb:'No Internet %', bar:true,  fmt:function(v){return v!=null?v.toFixed(1)+'%':'&mdash;';}},
+    {k:'renter',   lb:'Renter %',        bar:true,  fmt:function(v){return v!=null?v.toFixed(1)+'%':'&mdash;';}},
+    {k:'age65',    lb:'Age 65+ %',       bar:true,  fmt:function(v){return v!=null?v.toFixed(1)+'%':'&mdash;';}},
+    {k:'nonwhite', lb:'Non-white %',     bar:true,  fmt:function(v){return v!=null?v.toFixed(1)+'%':'&mdash;';}},
+    {k:'aian',     lb:'AIAN %',          bar:true,  fmt:function(v){return v!=null?v.toFixed(2)+'%':'&mdash;';}},
+    {k:'hispanic', lb:'Hispanic %',      bar:true,  fmt:function(v){return v!=null?v.toFixed(1)+'%':'&mdash;';}},
+    {k:'black',    lb:'Black/AA %',      bar:true,  fmt:function(v){return v!=null?v.toFixed(1)+'%':'&mdash;';}},
+    {k:'asian',    lb:'Asian %',         bar:true,  fmt:function(v){return v!=null?v.toFixed(1)+'%':'&mdash;';}},
+    {k:'lmi_hh',   lb:'LMI Households',  bar:false, fmt:function(v){return v!=null?v.toLocaleString():'&mdash;';}},
+    {k:'ami80',    lb:'80% AMI ($)',      bar:false, fmt:function(v){return v?'$'+v.toLocaleString():'&mdash;';}},
+    {k:'pop',      lb:'Population',       bar:false, fmt:function(v){return v.toLocaleString();}},
+    {k:'sites',    lb:'Sites',            bar:false, fmt:function(v){return v.join(', ');}, nosort:true},
   ];
-  const maxes={};
-  cols.filter(c=>c.bar).forEach(c=>{maxes[c.key]=Math.max(...data.map(r=>r[c.key]||0));});
-  function getSorted(){return [...data].sort((a,b)=>{const av=a[sortCol],bv=b[sortCol];if(av==null)return 1;if(bv==null)return -1;return typeof av==='string'?sortDir*av.localeCompare(bv):sortDir*(av-bv);});}
-  function makeRows(sorted){
-    return sorted.map(function(c){
+
+  var maxes={};
+  cols.forEach(function(c){ if(c.bar) maxes[c.k]=Math.max.apply(null,data.map(function(r){return r[c.k]||0;})); });
+
+  function sorted(){
+    return data.slice().sort(function(a,b){
+      var av=a[sortK], bv=b[sortK];
+      if(av==null) return 1; if(bv==null) return -1;
+      if(typeof av==='string') return sortD*av.localeCompare(bv);
+      return sortD*(av-bv);
+    });
+  }
+
+  function rows(d){
+    return d.map(function(c){
       var cells=cols.map(function(col){
-        var v=c[col.key];
-        var f=col.fmt(v);
-        if(col.key==='lmi_pass'){
-          var pass=v&&v.includes('✓');
-          return '<td style="font-weight:600;color:'+(pass?'#3B6D11':'#A32D2D')+';font-family:var(--mono);font-size:10px">'+f+'</td>';
+        var v=c[col.k];
+        if(col.special==='name') return '<td style="font-weight:500">'+v+'</td>';
+        if(col.special==='pass'){
+          var pc=v==='Pass'?'#3B6D11':'#A32D2D';
+          return '<td style="font-weight:600;color:'+pc+';font-family:var(--mono);font-size:10px">'+(v||'&mdash;')+'</td>';
         }
-        if(col.bar&&v!=null&&maxes[col.key]>0){
-          var p=Math.round(v/maxes[col.key]*100);
-          return '<td><span class="bar-wrap"><span class="bar-fill" style="width:'+p+'%;background:#185FA5"></span></span>'+f+'</td>';
+        var f=col.fmt?col.fmt(v):(v!=null?v:'&mdash;');
+        if(col.bar&&v!=null&&maxes[col.k]>0){
+          var p=Math.round(v/maxes[col.k]*100);
+          return '<td><span class="bw"><span class="bf" style="width:'+p+'%"></span></span>'+f+'</td>';
         }
-        if(col.key==='name')return '<td style="font-weight:500">'+f+'</td>';
         return '<td style="font-family:var(--mono);font-size:10px">'+f+'</td>';
       });
       return '<tr>'+cells.join('')+'</tr>';
     }).join('');
   }
-  window.sortBy=function(key){
-    if(sortCol===key)sortDir*=-1;else{sortCol=key;sortDir=-1;}
-    const tb=document.getElementById('tableBody');
-    if(tb)tb.innerHTML=makeRows(getSorted());
-    document.querySelectorAll('.data-table th').forEach((th,i)=>{
-      const c=cols[i];
-      th.className=c.key===sortCol?'sorted':'';
-      th.innerHTML=c.label+(c.key===sortCol?(sortDir>0?' ↑':' ↓'):'');
-      if(c.sort)th.onclick=()=>sortBy(c.key);
+
+  function thead(){
+    return cols.map(function(c){
+      var on=c.k===sortK?' on':'';
+      var arr=c.k===sortK?(sortD>0?' &uarr;':' &darr;'):'';
+      var onclick=c.nosort?'':'onclick="doSort(\''+c.k+'\')"';
+      var cur=c.nosort?'cursor:default':'';
+      return '<th class="'+on+'" '+onclick+' style="'+cur+'">'+c.lb+arr+'</th>';
+    }).join('');
+  }
+
+  window.doSort=function(k){
+    if(sortK===k) sortD*=-1; else{sortK=k;sortD=-1;}
+    var tb=document.getElementById('tb');
+    if(tb) tb.innerHTML=rows(sorted());
+    document.querySelectorAll('table th').forEach(function(th,i){
+      var c=cols[i];
+      th.className=c.k===sortK?'on':'';
+      th.innerHTML=c.lb+(c.k===sortK?(sortD>0?' &uarr;':' &darr;'):'');
+      if(!c.nosort) th.onclick=function(){doSort(c.k);};
     });
   };
-  const thead=cols.map(c=>`<th class="${c.key===sortCol?'sorted':''}" ${c.sort?`onclick="sortBy('${c.key}')"`:''} style="${c.sort?'':'cursor:default'}">${c.label}${c.key===sortCol?(sortDir>0?' ↑':' ↓'):''}</th>`).join('');
-  const wi=wavg('income'), wp=wavg('poverty'), wl=wavg('lmi_pct');
-  const lmiPass=wl!=null&&wl>=51;
-  const lmiBg=wl==null?'var(--paper2)':lmiPass?'#EAF3DE':'#FCEBEB';
-  const lmiBc=wl==null?'#d0cdc5':lmiPass?'#3B6D11':'#A32D2D';
-  const lmiNote=wl==null?'':lmiPass?'<span style="color:#3B6D11;font-size:9px">&#10003; Meets 51% threshold</span>':'<span style="color:#A32D2D;font-size:9px">&#10007; Below 51% threshold</span>';
-  document.getElementById('dataContent').innerHTML=`
-    <h3>${selectedSites.length} site${selectedSites.length!==1?'s':''} &middot; ${bufferMiles}-mi buffer &middot; ${data.length} counties
-      <button class="copy-btn" onclick="copyTable()">Copy TSV</button>
-    </h3>
-    <div style="background:#E6F1FB;border:1px solid #B5D4F4;border-radius:6px;padding:9px 12px;margin-bottom:12px;font-size:11px;line-height:1.6;font-family:var(--mono)">
-      <strong style="color:#0C447C">HUD CDBG/EDI LMI National Objective &mdash; 51% threshold</strong><br>
-      <span style="color:#185FA5">Service Area:</span> &ge;51% of residents LMI (below 80% AMI) &nbsp;&middot;&nbsp;
-      <span style="color:#185FA5">Job Creation:</span> &ge;51% of jobs available to LMI persons &nbsp;&middot;&nbsp;
-      <span style="color:#185FA5">Limited Clientele:</span> project exclusively serves LMI-qualified group
-    </div>
-    <div class="summary-cards">
-      <div class="scard"><div class="scard-n">${data.length}</div><div class="scard-l">Counties in service area</div></div>
-      <div class="scard"><div class="scard-n">${(totalPop/1000000).toFixed(2)}M</div><div class="scard-l">Total population</div></div>
-      <div class="scard"><div class="scard-n">${wi?'$'+Math.round(wi/1000)+'k':'&mdash;'}</div><div class="scard-l">Wtd. avg median income</div></div>
-      <div class="scard"><div class="scard-n">${wp?wp.toFixed(1)+'%':'&mdash;'}</div><div class="scard-l">Wtd. avg poverty rate</div></div>
-      <div class="scard" style="background:${lmiBg};border-color:${lmiBc}"><div class="scard-n">${wl?wl.toFixed(1)+'%':'&mdash;'}</div><div class="scard-l">Wtd. avg LMI (80% AMI)<br>${lmiNote}</div></div>
-    </div>
-    <div style="overflow-x:auto"><table class="data-table"><thead><tr>${thead}</tr></thead><tbody id="tableBody">${makeRows(getSorted())}</tbody></table></div>`;
+
+  var html='<h3>'+sites.length+' site'+(sites.length!==1?'s':'')+' &middot; '+bufMi+'-mi buffer &middot; '+data.length+' counties <button class="cb" onclick="copyTSV()">Copy TSV</button></h3>';
+  html+='<div class="info"><strong style="color:#0C447C">HUD CDBG/EDI LMI National Objective &mdash; 51% threshold</strong><br>';
+  html+='<span style="color:#185FA5">Service Area:</span> &ge;51% of residents LMI (below 80% AMI) &nbsp;&middot;&nbsp; ';
+  html+='<span style="color:#185FA5">Job Creation:</span> &ge;51% of jobs available to LMI persons &nbsp;&middot;&nbsp; ';
+  html+='<span style="color:#185FA5">Limited Clientele:</span> project exclusively serves LMI-qualified group</div>';
+  html+='<div class="cards">';
+  html+='<div class="card"><div class="cn">'+data.length+'</div><div class="cl">Counties in service area</div></div>';
+  html+='<div class="card"><div class="cn">'+(totalPop/1000000).toFixed(2)+'M</div><div class="cl">Total population</div></div>';
+  html+='<div class="card"><div class="cn">'+(wi?'$'+Math.round(wi/1000)+'k':'&mdash;')+'</div><div class="cl">Wtd. avg median income</div></div>';
+  html+='<div class="card"><div class="cn">'+(wp?wp.toFixed(1)+'%':'&mdash;')+'</div><div class="cl">Wtd. avg poverty rate</div></div>';
+  html+='<div class="card" style="background:'+lbg+';border-color:'+lbc+'"><div class="cn">'+(wl?wl.toFixed(1)+'%':'&mdash;')+'</div><div class="cl">Wtd. avg LMI (80% AMI)<br>'+lnote+'</div></div>';
+  html+='</div>';
+  html+='<div style="overflow-x:auto"><table><thead><tr>'+thead()+'</tr></thead><tbody id="tb">'+rows(sorted())+'</tbody></table></div>';
+  document.getElementById('dc').innerHTML=html;
 }
 
+window.copyTSV=function(){
+  if(!lastData) return;
+  var h=['County','Med. Income','51% Test','LMI % (80%AMI)','Very LMI % (50%AMI)','Poverty %','Unemp. %','No Internet %','Renter %','Age 65+ %','Non-white %','AIAN %','Hispanic %','Black/AA %','Asian %','LMI Households','80% AMI','Population','Sites'];
+  var r=lastData.map(function(c){return [
+    c.name, c.income?'$'+Math.round(c.income):'', c.lmi_pass,
+    c.lmi_pct?c.lmi_pct.toFixed(1)+'%':'', c.vlmi_pct?c.vlmi_pct.toFixed(1)+'%':'',
+    c.poverty?c.poverty.toFixed(1)+'%':'', c.unemployed?c.unemployed.toFixed(1)+'%':'',
+    c.no_internet?c.no_internet.toFixed(1)+'%':'', c.renter?c.renter.toFixed(1)+'%':'',
+    c.age65?c.age65.toFixed(1)+'%':'', c.nonwhite?c.nonwhite.toFixed(1)+'%':'',
+    c.aian?c.aian.toFixed(2)+'%':'', c.hispanic?c.hispanic.toFixed(1)+'%':'',
+    c.black?c.black.toFixed(1)+'%':'', c.asian?c.asian.toFixed(1)+'%':'',
+    c.lmi_hh||'', c.ami80?'$'+c.ami80:'', c.pop, c.sites.join('; ')
+  ];});
+  navigator.clipboard.writeText([h].concat(r).map(function(row){return row.join('\t');}).join('\n')).then(function(){
+    var b=document.querySelector('.cb'); if(b){b.textContent='Copied!'; setTimeout(function(){b.textContent='Copy TSV';},1500);}
+  });
+};
+
 buildSidebar();
-updateCount();
+updCount();
 </script>
 </body>
 </html>
