@@ -187,39 +187,7 @@ const SVC_COLOR={N:'#185FA5',C:'#3B6D11',T:'#BA7517'};
 const REGIONS=[...new Set(SITES.map(s=>s.region))];
 
 // ACS variable codes
-const ACS_VARS = [
-  'B01003_001E', // total population
-  'B19013_001E', // median HH income
-  'B17001_001E', // poverty universe
-  'B17001_002E', // below poverty
-  'B01001_001E', // sex/age universe
-  'B01001_020E','B01001_021E','B01001_022E','B01001_023E','B01001_024E','B01001_025E', // male 65+
-  'B01001_044E','B01001_045E','B01001_046E','B01001_047E','B01001_048E','B01001_049E', // female 65+
-  'B28002_001E', // internet universe
-  'B28002_013E', // no internet
-  'B18101_001E', // disability universe
-  'B18101_004E','B18101_007E','B18101_010E','B18101_013E','B18101_016E','B18101_019E', // male disability
-  'B18101_023E','B18101_026E','B18101_029E','B18101_032E','B18101_035E','B18101_038E', // female disability
-  'B15003_001E', // education universe
-  'B15003_002E','B15003_003E','B15003_004E','B15003_005E','B15003_006E','B15003_007E',
-  'B15003_008E','B15003_009E','B15003_010E','B15003_011E','B15003_012E','B15003_013E',
-  'B15003_014E','B15003_015E','B15003_016E', // no HS diploma categories
-  'B23025_001E', // labor force universe
-  'B23025_005E', // unemployed
-  'B27010_001E', // insurance universe
-  'B27010_017E','B27010_033E','B27010_050E','B27010_066E', // uninsured by age group
-  'B25003_001E', // housing universe
-  'B25003_003E', // renter occupied
-  'B03002_001E', // race/ethnicity universe
-  'B03002_003E', // white non-Hispanic
-  'B03002_004E', // Black/AA non-Hispanic
-  'B03002_005E', // American Indian/Alaska Native non-Hispanic
-  'B03002_006E', // Asian non-Hispanic
-  'B03002_007E', // Native Hawaiian/Pacific Islander non-Hispanic
-  'B03002_008E', // Some other race non-Hispanic
-  'B03002_009E', // Two or more races non-Hispanic
-  'B03002_012E', // Hispanic or Latino
-];
+// Variables split into VARS_BATCH1 and VARS_BATCH2 below
 
 const METRIC_CONFIG = {
   income:     {label:'Median HH income',    fmt:v=>'$'+Math.round(v).toLocaleString(), scheme:d3.interpolateBlues,   higherIsBetter:true},
@@ -304,59 +272,61 @@ function pointInCircle(lat,lon,cLat,cLon,mi){
 }
 function milesToDeg(m){return m/69;}
 
-function parseCounty(row, headers){
-  function g(name){const i=headers.indexOf(name);return i>=0?parseFloat(row[i]):0;}
-  const pop=g('B01003_001E');
-  const income=g('B19013_001E');
-  const pov_u=g('B17001_001E'), pov_b=g('B17001_002E');
-  const m65=g('B01001_020E')+g('B01001_021E')+g('B01001_022E')+g('B01001_023E')+g('B01001_024E')+g('B01001_025E');
-  const f65=g('B01001_044E')+g('B01001_045E')+g('B01001_046E')+g('B01001_047E')+g('B01001_048E')+g('B01001_049E');
-  const internet_u=g('B28002_001E'), no_internet=g('B28002_013E');
-  const dis_u=g('B18101_001E');
-  const dis_m=g('B18101_004E')+g('B18101_007E')+g('B18101_010E')+g('B18101_013E')+g('B18101_016E')+g('B18101_019E');
-  const dis_f=g('B18101_023E')+g('B18101_026E')+g('B18101_029E')+g('B18101_032E')+g('B18101_035E')+g('B18101_038E');
-  const edu_u=g('B15003_001E');
-  const no_hs=['B15003_002E','B15003_003E','B15003_004E','B15003_005E','B15003_006E','B15003_007E','B15003_008E','B15003_009E','B15003_010E','B15003_011E','B15003_012E','B15003_013E','B15003_014E','B15003_015E','B15003_016E'].reduce((s,v)=>s+g(v),0);
-  const labor_u=g('B23025_001E'), unemployed=g('B23025_005E');
-  const ins_u=g('B27010_001E');
-  const uninsured=g('B27010_017E')+g('B27010_033E')+g('B27010_050E')+g('B27010_066E');
-  const housing_u=g('B25003_001E'), renter=g('B25003_003E');
-  const race_u=g('B03002_001E'), white_nh=g('B03002_003E');
-  const black_nh=g('B03002_004E');
-  const aian_nh=g('B03002_005E');
-  const asian_nh=g('B03002_006E');
-  const hispanic=g('B03002_012E');
+// Split into two batches — Census API hard limit is 50 variables per call
+// Batch 1 (47 vars + NAME + state + county = 50): pop, income, poverty, age, internet, disability
+const VARS_BATCH1 = [
+  'B01003_001E','B19013_001E',
+  'B17001_001E','B17001_002E',
+  'B01001_001E',
+  'B01001_020E','B01001_021E','B01001_022E','B01001_023E','B01001_024E','B01001_025E',
+  'B01001_044E','B01001_045E','B01001_046E','B01001_047E','B01001_048E','B01001_049E',
+  'B28002_001E','B28002_013E',
+  'B18101_001E',
+  'B18101_004E','B18101_007E','B18101_010E','B18101_013E','B18101_016E','B18101_019E',
+  'B18101_023E','B18101_026E','B18101_029E','B18101_032E','B18101_035E','B18101_038E',
+];
+// Batch 2 (28 vars + NAME + state + county = 31): education, labor, insurance, housing, race
+const VARS_BATCH2 = [
+  'B15003_001E',
+  'B15003_002E','B15003_003E','B15003_004E','B15003_005E','B15003_006E','B15003_007E',
+  'B15003_008E','B15003_009E','B15003_010E','B15003_011E','B15003_012E','B15003_013E',
+  'B15003_014E','B15003_015E','B15003_016E',
+  'B23025_001E','B23025_005E',
+  'B27010_001E','B27010_017E','B27010_033E','B27010_050E','B27010_066E',
+  'B25003_001E','B25003_003E',
+  'B03002_001E','B03002_003E','B03002_004E','B03002_005E',
+  'B03002_006E','B03002_012E',
+];
 
-  return {
-    pop: Math.round(pop),
-    income: income>0?income:null,
-    poverty:    pov_u>0?pov_b/pov_u*100:null,
-    age65:      pop>0?(m65+f65)/pop*100:null,
-    no_internet:internet_u>0?no_internet/internet_u*100:null,
-    disability: dis_u>0?(dis_m+dis_f)/dis_u*100:null,
-    no_hs:      edu_u>0?no_hs/edu_u*100:null,
-    unemployed: labor_u>0?unemployed/labor_u*100:null,
-    uninsured:  ins_u>0?uninsured/ins_u*100:null,
-    renter:     housing_u>0?renter/housing_u*100:null,
-    nonwhite:   race_u>0?(race_u-white_nh)/race_u*100:null,
-    aian:       race_u>0?aian_nh/race_u*100:null,
-    hispanic:   race_u>0?hispanic/race_u*100:null,
-    black:      race_u>0?black_nh/race_u*100:null,
-    asian:      race_u>0?asian_nh/race_u*100:null,
-  };
+function parseRow(row, headers){
+  function g(name){const i=headers.indexOf(name);return i>=0?parseFloat(row[i])||0:0;}
+  return {_g:g};
+}
+
+async function censusCall(vars){
+  const url=`https://api.census.gov/data/2022/acs/acs5?get=NAME,${vars.join(',')}&for=county:*&in=state:27&key=${CENSUS_KEY}`;
+  const resp=await fetch(url);
+  if(!resp.ok){const txt=await resp.text();throw new Error(`Census API ${resp.status}: ${txt.slice(0,200)}`);}
+  return resp.json();
 }
 
 async function fetchCensusData(selectedSites,radiusMi){
-  const vars=['NAME',...ACS_VARS].join(',');
-  const url=`https://api.census.gov/data/2022/acs/acs5?get=${vars}&for=county:*&in=state:27&key=${CENSUS_KEY}`;
-  const resp=await fetch(url);
-  if(!resp.ok){const txt=await resp.text();throw new Error(`Census API ${resp.status}: ${txt.slice(0,120)}`);}
-  const raw=await resp.json();
-  const headers=raw[0];
-  const countyI=headers.indexOf('county');
-  const nameI=headers.indexOf('NAME');
+  // Fire both calls in parallel
+  const [raw1, raw2] = await Promise.all([censusCall(VARS_BATCH1), censusCall(VARS_BATCH2)]);
+
+  const h1=raw1[0], h2=raw2[0];
+  const countyI=h1.indexOf('county');
+  const nameI=h1.indexOf('NAME');
+
+  // Index batch2 by fips for quick lookup
+  const b2map={};
+  raw2.slice(1).forEach(row=>{
+    const fips=row[h2.indexOf('county')];
+    b2map[fips]=row;
+  });
+
   const results=[];
-  raw.slice(1).forEach(row=>{
+  raw1.slice(1).forEach(row=>{
     const fips=row[countyI];
     const name=row[nameI].replace(', Minnesota','');
     const centroid=MN_COUNTY_CENTROIDS[fips];
@@ -364,8 +334,49 @@ async function fetchCensusData(selectedSites,radiusMi){
     const [cLat,cLon]=centroid;
     const matchedSites=selectedSites.filter(s=>pointInCircle(cLat,cLon,s.lat,s.lon,radiusMi));
     if(matchedSites.length===0)return;
-    const demo=parseCounty(row,headers);
-    results.push({name,fips,sites:matchedSites.map(s=>s.city),...demo});
+
+    function g1(v){const i=h1.indexOf(v);return i>=0?parseFloat(row[i])||0:0;}
+    const row2=b2map[fips]||[];
+    function g2(v){const i=h2.indexOf(v);return i>=0?parseFloat(row2[i])||0:0;}
+
+    const pop=g1('B01003_001E');
+    const income=g1('B19013_001E');
+    const pov_u=g1('B17001_001E'), pov_b=g1('B17001_002E');
+    const m65=g1('B01001_020E')+g1('B01001_021E')+g1('B01001_022E')+g1('B01001_023E')+g1('B01001_024E')+g1('B01001_025E');
+    const f65=g1('B01001_044E')+g1('B01001_045E')+g1('B01001_046E')+g1('B01001_047E')+g1('B01001_048E')+g1('B01001_049E');
+    const internet_u=g1('B28002_001E'), no_internet=g1('B28002_013E');
+    const dis_u=g1('B18101_001E');
+    const dis_m=g1('B18101_004E')+g1('B18101_007E')+g1('B18101_010E')+g1('B18101_013E')+g1('B18101_016E')+g1('B18101_019E');
+    const dis_f=g1('B18101_023E')+g1('B18101_026E')+g1('B18101_029E')+g1('B18101_032E')+g1('B18101_035E')+g1('B18101_038E');
+
+    const edu_u=g2('B15003_001E');
+    const no_hs=['B15003_002E','B15003_003E','B15003_004E','B15003_005E','B15003_006E','B15003_007E','B15003_008E','B15003_009E','B15003_010E','B15003_011E','B15003_012E','B15003_013E','B15003_014E','B15003_015E','B15003_016E'].reduce((s,v)=>s+g2(v),0);
+    const labor_u=g2('B23025_001E'), unemployed=g2('B23025_005E');
+    const ins_u=g2('B27010_001E');
+    const uninsured=g2('B27010_017E')+g2('B27010_033E')+g2('B27010_050E')+g2('B27010_066E');
+    const housing_u=g2('B25003_001E'), renter=g2('B25003_003E');
+    const race_u=g2('B03002_001E'), white_nh=g2('B03002_003E');
+    const black_nh=g2('B03002_004E'), aian_nh=g2('B03002_005E');
+    const asian_nh=g2('B03002_006E'), hispanic=g2('B03002_012E');
+
+    results.push({
+      name, fips, sites:matchedSites.map(s=>s.city),
+      pop: Math.round(pop),
+      income: income>0?income:null,
+      poverty:    pov_u>0?pov_b/pov_u*100:null,
+      age65:      pop>0?(m65+f65)/pop*100:null,
+      no_internet:internet_u>0?no_internet/internet_u*100:null,
+      disability: dis_u>0?(dis_m+dis_f)/dis_u*100:null,
+      no_hs:      edu_u>0?no_hs/edu_u*100:null,
+      unemployed: labor_u>0?unemployed/labor_u*100:null,
+      uninsured:  ins_u>0?uninsured/ins_u*100:null,
+      renter:     housing_u>0?renter/housing_u*100:null,
+      nonwhite:   race_u>0?(race_u-white_nh)/race_u*100:null,
+      aian:       race_u>0?aian_nh/race_u*100:null,
+      hispanic:   race_u>0?hispanic/race_u*100:null,
+      black:      race_u>0?black_nh/race_u*100:null,
+      asian:      race_u>0?asian_nh/race_u*100:null,
+    });
   });
   return results;
 }
