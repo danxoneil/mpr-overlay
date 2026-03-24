@@ -598,20 +598,23 @@ function renderTable(selectedSites,data){
   cols.filter(c=>c.bar).forEach(c=>{maxes[c.key]=Math.max(...data.map(r=>r[c.key]||0));});
   function getSorted(){return [...data].sort((a,b)=>{const av=a[sortCol],bv=b[sortCol];if(av==null)return 1;if(bv==null)return -1;return typeof av==='string'?sortDir*av.localeCompare(bv):sortDir*(av-bv);});}
   function makeRows(sorted){
-    return sorted.map(c=>`<tr>${cols.map(col=>{
-      const v=c[col.key];
-      const f=col.fmt(v);
-      if(col.key==='lmi_pass'){
-        const pass=v&&v.includes('✓');
-        return `<td style="font-weight:600;color:${pass?'#3B6D11':'#A32D2D'};font-family:var(--mono);font-size:10px">${f}</td>`;
-      }
-      if(col.bar&&v!=null&&maxes[col.key]>0){
-        const p=Math.round(v/maxes[col.key]*100);
-        return `<td><span class="bar-wrap"><span class="bar-fill" style="width:${p}%;background:#185FA5"></span></span>${f}</td>`;
-      }
-      if(col.key==='name')return `<td style="font-weight:500">${f}</td>`;
-      return `<td style="font-family:var(--mono);font-size:10px">${f}</td>`;
-    }).join('')}</tr>`).join('');
+    return sorted.map(function(c){
+      var cells=cols.map(function(col){
+        var v=c[col.key];
+        var f=col.fmt(v);
+        if(col.key==='lmi_pass'){
+          var pass=v&&v.includes('✓');
+          return '<td style="font-weight:600;color:'+(pass?'#3B6D11':'#A32D2D')+';font-family:var(--mono);font-size:10px">'+f+'</td>';
+        }
+        if(col.bar&&v!=null&&maxes[col.key]>0){
+          var p=Math.round(v/maxes[col.key]*100);
+          return '<td><span class="bar-wrap"><span class="bar-fill" style="width:'+p+'%;background:#185FA5"></span></span>'+f+'</td>';
+        }
+        if(col.key==='name')return '<td style="font-weight:500">'+f+'</td>';
+        return '<td style="font-family:var(--mono);font-size:10px">'+f+'</td>';
+      });
+      return '<tr>'+cells.join('')+'</tr>';
+    }).join('');
   }
   window.sortBy=function(key){
     if(sortCol===key)sortDir*=-1;else{sortCol=key;sortDir=-1;}
