@@ -66,7 +66,7 @@ header p{font-family:var(--mono);font-size:11px;color:#888}
 .legend-ends{display:flex;justify-content:space-between;width:100px;font-size:9px;color:var(--ink3);font-family:var(--mono);margin-top:2px}
 .data-panel{padding:16px;flex:1;overflow:auto}
 .data-panel h3{font-size:11px;font-weight:600;font-family:var(--mono);color:var(--ink2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px}
-.summary-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:14px}
+.summary-cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:14px}
 .scard{background:var(--paper2);border:var(--border);border-radius:var(--radius);padding:9px 11px}
 .scard-n{font-size:18px;font-weight:600;color:var(--ink);font-family:var(--mono)}
 .scard-l{font-size:9px;color:var(--ink3);margin-top:2px;text-transform:uppercase;letter-spacing:.04em;line-height:1.4}
@@ -118,6 +118,8 @@ header p{font-family:var(--mono);font-size:11px;color:#888}
         <option value="hispanic">Hispanic or Latino (%)</option>
         <option value="black">Black / African American (%)</option>
         <option value="asian">Asian (%)</option>
+        <option value="lmi_pct">LMI households — below 80% AMI (%)</option>
+        <option value="vlmi_pct">Very LMI households — below 50% AMI (%)</option>
       </select>
     </div>
     <div class="site-count" id="siteCount">0 sites selected</div>
@@ -154,7 +156,7 @@ header p{font-family:var(--mono);font-size:11px;color:#888}
 </div>
 
 <script>
-const CENSUS_KEY = 'a25d819c5141640da6bd188da09edb9abf19bbb2';
+const CENSUS_KEY = 'YOUR_CENSUS_API_KEY';
 
 const SITES = [
   {id:'tcmsp',  city:'Minneapolis/St. Paul', region:'Twin Cities',      lat:44.9778,lon:-93.2650,calls:['KNOW','KSJN','KCMP'],svcs:['N','C','T'],flagship:true},
@@ -204,6 +206,24 @@ const CENSUS_VARS = [
   'B03002_008E',  // Some other race non-Hispanic
   'B03002_009E',  // Two or more races non-Hispanic
   'B03002_012E',  // Hispanic or Latino
+  // Household income distribution (for LMI calculation)
+  'B19001_001E',  // total households
+  'B19001_002E',  // < $10k
+  'B19001_003E',  // $10k-$14,999
+  'B19001_004E',  // $15k-$19,999
+  'B19001_005E',  // $20k-$24,999
+  'B19001_006E',  // $25k-$29,999
+  'B19001_007E',  // $30k-$34,999
+  'B19001_008E',  // $35k-$39,999
+  'B19001_009E',  // $40k-$44,999
+  'B19001_010E',  // $45k-$49,999
+  'B19001_011E',  // $50k-$59,999
+  'B19001_012E',  // $60k-$74,999
+  'B19001_013E',  // $75k-$99,999
+  'B19001_014E',  // $100k-$124,999
+  'B19001_015E',  // $125k-$149,999
+  'B19001_016E',  // $150k-$199,999
+  'B19001_017E',  // $200k+
 ].join(',');
 
 const METRIC_CONFIG = {
@@ -218,7 +238,66 @@ const METRIC_CONFIG = {
   hispanic:  {label:'Hispanic or Latino (%)',      fmt:v=>v.toFixed(1)+'%',                  scheme:d3.interpolateGreens},
   black:     {label:'Black/African American (%)',  fmt:v=>v.toFixed(1)+'%',                  scheme:d3.interpolatePurples},
   asian:     {label:'Asian (%)',                   fmt:v=>v.toFixed(1)+'%',                  scheme:d3.interpolateBlues},
+  lmi_pct:   {label:'LMI households (% below 80% AMI)', fmt:v=>v.toFixed(1)+'%',              scheme:d3.interpolateOranges, threshold:51},
+  vlmi_pct:  {label:'Very LMI households (% below 50% AMI)', fmt:v=>v.toFixed(1)+'%',        scheme:d3.interpolateReds,    threshold:51},
 };
+
+// HUD FY2022 80% AMI (4-person household) by MN county FIPS
+// Metro counties have higher limits; non-metro default ~$70,550
+const HUD_80_AMI = {
+  '053':95000,'123':95000,'037':95000,'003':95000,'139':95000,
+  '019':95000,'163':95000,'141':95000,'059':95000,'171':95000,
+  '109':87200, // Olmsted (Rochester MSA)
+  '137':74500,'017':74500, // St. Louis, Carlton (Duluth MSA)
+  '145':79200,'009':79200, // Stearns, Benton (St. Cloud MSA)
+  '027':79200, // Clay (Fargo MSA)
+  '035':72800, // Crow Wing (Brainerd MSA)
+};
+const HUD_80_AMI_DEFAULT = 70550; // Non-metro MN (4-person)
+// HUD FY2022 50% AMI (4-person household) — very low income
+const HUD_50_AMI = {
+  '053':59400,'123':59400,'037':59400,'003':59400,'139':59400,
+  '019':59400,'163':59400,'141':59400,'059':59400,'171':59400,
+  '109':54500,
+  '137':46550,'017':46550,
+  '145':49500,'009':49500,
+  '027':49500,
+  '035':45500,
+};
+const HUD_50_AMI_DEFAULT = 44100;
+
+function getAMI80(fips){ return HUD_80_AMI[fips]||HUD_80_AMI_DEFAULT; }
+function getAMI50(fips){ return HUD_50_AMI[fips]||HUD_50_AMI_DEFAULT; }
+
+// Estimate households below an income threshold using B19001 brackets
+// Brackets: <10k,10-15,15-20,20-25,25-30,30-35,35-40,40-45,45-50,50-60,60-75,75-100,100-125,125-150,150-200,200+
+function hhBelowThreshold(g, threshold){
+  const brackets = [
+    [0,    10000,  g('B19001_002E')],
+    [10000,15000,  g('B19001_003E')],
+    [15000,20000,  g('B19001_004E')],
+    [20000,25000,  g('B19001_005E')],
+    [25000,30000,  g('B19001_006E')],
+    [30000,35000,  g('B19001_007E')],
+    [35000,40000,  g('B19001_008E')],
+    [40000,45000,  g('B19001_009E')],
+    [45000,50000,  g('B19001_010E')],
+    [50000,60000,  g('B19001_011E')],
+    [60000,75000,  g('B19001_012E')],
+    [75000,100000, g('B19001_013E')],
+    [100000,125000,g('B19001_014E')],
+    [125000,150000,g('B19001_015E')],
+    [150000,200000,g('B19001_016E')],
+    [200000,1e9,   g('B19001_017E')],
+  ];
+  let count = 0;
+  for(const [lo,hi,hh] of brackets){
+    if(threshold >= hi){ count += hh; }
+    else if(threshold > lo){ count += hh * (threshold-lo)/(hi-lo); }
+    else break;
+  }
+  return count;
+}
 
 const MN_COUNTY_CENTROIDS={
   '001':[46.60,-93.41],  // Aitkin
@@ -366,6 +445,11 @@ async function fetchCensusData(selectedSites,radiusMi){
     const m65=g('B01001_020E')+g('B01001_021E')+g('B01001_022E')+g('B01001_025E');
     const f65=g('B01001_044E')+g('B01001_045E')+g('B01001_046E')+g('B01001_049E');
     const pov_u=g('B17001_001E');
+    const total_hh = g('B19001_001E');
+    const ami80 = getAMI80(fips);
+    const ami50 = getAMI50(fips);
+    const hh_lmi  = total_hh>0 ? hhBelowThreshold(g, ami80) : 0;
+    const hh_vlmi = total_hh>0 ? hhBelowThreshold(g, ami50) : 0;
     results.push({
       name, fips, sites:matchedSites.map(s=>s.city),
       pop:          Math.round(pop),
@@ -380,6 +464,13 @@ async function fetchCensusData(selectedSites,radiusMi){
       hispanic:     race_u>0?g('B03002_012E')/race_u*100:null,
       black:        race_u>0?g('B03002_004E')/race_u*100:null,
       asian:        race_u>0?g('B03002_006E')/race_u*100:null,
+      lmi_pct:      total_hh>0?hh_lmi/total_hh*100:null,
+      vlmi_pct:     total_hh>0?hh_vlmi/total_hh*100:null,
+      lmi_pass:     total_hh>0?(hh_lmi/total_hh*100>=51?'✓ Pass':'✗ Fail'):'—',
+      lmi_hh:       Math.round(hh_lmi),
+      vlmi_hh:      Math.round(hh_vlmi),
+      total_hh:     Math.round(total_hh),
+      ami80,
     });
   });
   return results;
@@ -451,7 +542,12 @@ function redrawMap(selectedSites,data){
           <div class="tip-row"><span class="tip-label">Hispanic/Latino</span><span class="tip-val">${fmt(cd.hispanic,v=>v.toFixed(1)+'%')}</span></div>
           <div class="tip-row"><span class="tip-label">Black/AA</span><span class="tip-val">${fmt(cd.black,v=>v.toFixed(1)+'%')}</span></div>
           <div class="tip-row"><span class="tip-label">Asian</span><span class="tip-val">${fmt(cd.asian,v=>v.toFixed(1)+'%')}</span></div>
-          <div style="margin-top:5px;font-size:9px;color:var(--ink3)">${cd.sites.join(', ')}</div>`;
+          <div class="tip-section">HUD LMI (80% AMI = $${cd.ami80.toLocaleString()})</div>
+          <div class="tip-row"><span class="tip-label">51% threshold</span><span class="tip-val" style="color:${cd.lmi_pass&&cd.lmi_pass.includes('✓')?'#3B6D11':'#A32D2D'}">${cd.lmi_pass||'—'}</span></div>
+          <div class="tip-row"><span class="tip-label">LMI households</span><span class="tip-val">${fmt(cd.lmi_pct,v=>v.toFixed(1)+'%')}</span></div>
+          <div class="tip-row"><span class="tip-label">LMI count</span><span class="tip-val">${cd.lmi_hh!=null?cd.lmi_hh.toLocaleString():'—'}</span></div>
+          <div class="tip-row"><span class="tip-label">Very LMI (50% AMI)</span><span class="tip-val">${fmt(cd.vlmi_pct,v=>v.toFixed(1)+'%')}</span></div>
+          <div style="margin-top:5px;font-size:9px;color:var(--ink3)">${cd.sites.join(', ')}</div>\`;
       })
       .on('mouseleave',()=>{document.getElementById('mapTip').style.display='none';});
     selectedSites.forEach(site=>{
@@ -490,13 +586,19 @@ function renderTable(selectedSites,data){
     {key:'hispanic',   label:'Hispanic %',    fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
     {key:'black',      label:'Black/AA %',    fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
     {key:'asian',      label:'Asian %',       fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
+    {key:'lmi_pass',   label:'51% Test',       fmt:v=>v,                                        sort:true},
+    {key:'lmi_pct',    label:'LMI % (80% AMI)',fmt:v=>v!=null?v.toFixed(1)+'%':'—',            sort:true, bar:true},
+    {key:'vlmi_pct',   label:'Very LMI % (50%)',fmt:v=>v!=null?v.toFixed(1)+'%':'—',           sort:true, bar:true},
+    {key:'lmi_hh',     label:'LMI Households', fmt:v=>v!=null?v.toLocaleString():'—',          sort:true},
+    {key:'ami80',      label:'80% AMI ($)',    fmt:v=>v?'$'+v.toLocaleString():'—',             sort:true},
     {key:'pop',        label:'Population',    fmt:v=>v.toLocaleString(),                        sort:true},
     {key:'sites',      label:'Sites',         fmt:v=>v.join(', '),                              sort:false},
   ];
   const maxes={};
   cols.filter(c=>c.bar).forEach(c=>{maxes[c.key]=Math.max(...data.map(r=>r[c.key]||0));});
   function getSorted(){return [...data].sort((a,b)=>{const av=a[sortCol],bv=b[sortCol];if(av==null)return 1;if(bv==null)return -1;return typeof av==='string'?sortDir*av.localeCompare(bv):sortDir*(av-bv);});}
-  function makeRows(sorted){return sorted.map(c=>`<tr>${cols.map(col=>{const v=c[col.key];const f=col.fmt(v);if(col.bar&&v!=null&&maxes[col.key]>0){const p=Math.round(v/maxes[col.key]*100);return `<td><span class="bar-wrap"><span class="bar-fill" style="width:${p}%;background:#185FA5"></span></span>${f}</td>`;}if(col.key==='name')return `<td style="font-weight:500">${f}</td>`;return `<td style="font-family:var(--mono);font-size:10px">${f}</td>`;}).join('')}</tr>`).join('');}
+  function makeRows(sorted){return sorted.map(c=>`<tr>${cols.map(col=>{const v=c[col.key];const f=col.fmt(v);if(col.bar&&v!=null&&maxes[col.key]>0){const p=Math.round(v/maxes[col.key]*100);return `<td><span class="bar-wrap"><span class="bar-fill" style="width:${p}%;background:#185FA5"></span></span>${f}</td>`;}if(col.key==='lmi_pass'){const pass=v&&v.includes('✓');return `<td style="font-weight:600;color:${pass?'#3B6D11':'#A32D2D'};font-family:var(--mono);font-size:10px">${f}</td>`;}
+              if(col.key==='name')return `<td style="font-weight:500">${f}</td>`;return `<td style="font-family:var(--mono);font-size:10px">${f}</td>`;}).join('')}</tr>`).join('');}
   window.sortBy=function(key){if(sortCol===key)sortDir*=-1;else{sortCol=key;sortDir=-1;}const tb=document.getElementById('tableBody');if(tb)tb.innerHTML=makeRows(getSorted());document.querySelectorAll('.data-table th').forEach((th,i)=>{const c=cols[i];th.className=c.key===sortCol?'sorted':'';th.innerHTML=c.label+(c.key===sortCol?(sortDir>0?' ↑':' ↓'):'');if(c.sort)th.onclick=()=>sortBy(c.key);});};
   const thead=cols.map(c=>`<th class="${c.key===sortCol?'sorted':''}" ${c.sort?`onclick="sortBy('${c.key}')"`:''} style="${c.sort?'':'cursor:default'}">${c.label}${c.key===sortCol?(sortDir>0?' ↑':' ↓'):''}</th>`).join('');
   const wi=wavg('income'), wp=wavg('poverty');
@@ -504,19 +606,40 @@ function renderTable(selectedSites,data){
     <h3>${selectedSites.length} site${selectedSites.length!==1?'s':''} · ${bufferMiles}-mi buffer · ${data.length} counties
       <button class="copy-btn" onclick="copyTable()">Copy TSV</button>
     </h3>
+    <div style="background:#E6F1FB;border:1px solid #B5D4F4;border-radius:6px;padding:9px 12px;margin-bottom:12px;font-size:11px;line-height:1.6;font-family:var(--mono)">
+      <strong style="color:#0C447C">HUD CDBG/EDI LMI National Objective — 51% threshold</strong><br>
+      <span style="color:#185FA5">Service Area method:</span> ≥51% of residents in service area must be LMI (below 80% AMI) · 
+      <span style="color:#185FA5">Job Creation method:</span> ≥51% of jobs available to LMI persons · 
+      <span style="color:#185FA5">Limited Clientele:</span> project exclusively serves LMI-qualified group (disabled, homeless, seniors)
+    </div>
     <div class="summary-cards">
       <div class="scard"><div class="scard-n">${data.length}</div><div class="scard-l">Counties in service area</div></div>
       <div class="scard"><div class="scard-n">${(totalPop/1000000).toFixed(2)}M</div><div class="scard-l">Total population</div></div>
       <div class="scard"><div class="scard-n">${wi?'$'+Math.round(wi/1000)+'k':'—'}</div><div class="scard-l">Wtd. avg median income</div></div>
       <div class="scard"><div class="scard-n">${wp?wp.toFixed(1)+'%':'—'}</div><div class="scard-l">Wtd. avg poverty rate</div></div>
+      <div class="scard" id="lmiCard" style="border-color:var(--color-border)">
+        <div class="scard-n" id="lmiCardN">${(()=>{const v=wavg('lmi_pct');return v!=null?v.toFixed(1)+'%':'—'})()}</div>
+        <div class="scard-l">Wtd. avg LMI (80% AMI)<br><span id="lmiThreshNote" style="font-size:9px"></span></div>
+      </div>
     </div>
+    <script>
+    (function(){
+      const v=wavg('lmi_pct');
+      const card=document.getElementById('lmiCard');
+      const note=document.getElementById('lmiThreshNote');
+      if(v!=null){
+        if(v>=51){card.style.background='#EAF3DE';card.style.borderColor='#3B6D11';note.style.color='#3B6D11';note.textContent='✓ Meets 51% HUD threshold';}
+        else{card.style.background='#FCEBEB';card.style.borderColor='#A32D2D';note.style.color='#A32D2D';note.textContent='✗ Below 51% HUD threshold';}
+      }
+    })();
+    </script>
     <div style="overflow-x:auto"><table class="data-table"><thead><tr>${thead}</tr></thead><tbody id="tableBody">${makeRows(getSorted())}</tbody></table></div>`;
 }
 
 window.copyTable=function(){
   if(!lastResults)return;
-  const headers=['County','Med. Income','Poverty %','Unemp. %','No Internet %','Renter %','Age 65+ %','Non-white %','AIAN %','Hispanic %','Black/AA %','Asian %','Population','Sites'];
-  const rows=lastResults.map(c=>[c.name,c.income?'$'+Math.round(c.income):'',c.poverty?c.poverty.toFixed(1)+'%':'',c.unemployed?c.unemployed.toFixed(1)+'%':'',c.no_internet?c.no_internet.toFixed(1)+'%':'',c.renter?c.renter.toFixed(1)+'%':'',c.age65?c.age65.toFixed(1)+'%':'',c.nonwhite?c.nonwhite.toFixed(1)+'%':'',c.aian?c.aian.toFixed(2)+'%':'',c.hispanic?c.hispanic.toFixed(1)+'%':'',c.black?c.black.toFixed(1)+'%':'',c.asian?c.asian.toFixed(1)+'%':'',c.pop,c.sites.join('; ')]);
+  const headers=['County','Med. Income','Poverty %','Unemp. %','No Internet %','Renter %','Age 65+ %','Non-white %','AIAN %','Hispanic %','Black/AA %','Asian %','51% Test','LMI % (80%AMI)','Very LMI % (50%AMI)','LMI Households','80% AMI Threshold','Population','Sites'];
+  const rows=lastResults.map(c=>[c.name,c.income?'$'+Math.round(c.income):'',c.poverty?c.poverty.toFixed(1)+'%':'',c.unemployed?c.unemployed.toFixed(1)+'%':'',c.no_internet?c.no_internet.toFixed(1)+'%':'',c.renter?c.renter.toFixed(1)+'%':'',c.age65?c.age65.toFixed(1)+'%':'',c.nonwhite?c.nonwhite.toFixed(1)+'%':'',c.aian?c.aian.toFixed(2)+'%':'',c.hispanic?c.hispanic.toFixed(1)+'%':'',c.black?c.black.toFixed(1)+'%':'',c.asian?c.asian.toFixed(1)+'%':'',c.lmi_pass||'',c.lmi_pct?c.lmi_pct.toFixed(1)+'%':'',c.vlmi_pct?c.vlmi_pct.toFixed(1)+'%':'',c.lmi_hh||'',c.ami80?'$'+c.ami80:'',c.pop,c.sites.join('; ')]);
   navigator.clipboard.writeText([headers,...rows].map(r=>r.join('\t')).join('\n')).then(()=>{const b=document.querySelector('.copy-btn');if(b){b.textContent='Copied!';setTimeout(()=>b.textContent='Copy TSV',1500);}});
 };
 
