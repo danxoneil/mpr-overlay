@@ -617,22 +617,15 @@ function renderTable(selectedSites,data){
       <div class="scard"><div class="scard-n">${(totalPop/1000000).toFixed(2)}M</div><div class="scard-l">Total population</div></div>
       <div class="scard"><div class="scard-n">${wi?'$'+Math.round(wi/1000)+'k':'—'}</div><div class="scard-l">Wtd. avg median income</div></div>
       <div class="scard"><div class="scard-n">${wp?wp.toFixed(1)+'%':'—'}</div><div class="scard-l">Wtd. avg poverty rate</div></div>
-      <div class="scard" id="lmiCard" style="border-color:var(--color-border)">
-        <div class="scard-n" id="lmiCardN">${(()=>{const v=wavg('lmi_pct');return v!=null?v.toFixed(1)+'%':'—'})()}</div>
-        <div class="scard-l">Wtd. avg LMI (80% AMI)<br><span id="lmiThreshNote" style="font-size:9px"></span></div>
-      </div>
+      \${(()=>{
+        const v=wavg('lmi_pct');
+        const pass=v!=null&&v>=51;
+        const bg=v==null?'var(--paper2)':pass?'#EAF3DE':'#FCEBEB';
+        const bc=v==null?'var(--border)':pass?'#3B6D11':'#A32D2D';
+        const note=v==null?'':pass?'<span style="color:#3B6D11;font-size:9px">✓ Meets 51% threshold</span>':'<span style="color:#A32D2D;font-size:9px">✗ Below 51% threshold</span>';
+        return '<div class="scard" style="background:'+bg+';border-color:'+bc+'"><div class="scard-n">'+(v!=null?v.toFixed(1)+'%':'—')+'</div><div class="scard-l">Wtd. avg LMI (80% AMI)<br>'+note+'</div></div>';
+      })()}
     </div>
-    <script>
-    (function(){
-      const v=wavg('lmi_pct');
-      const card=document.getElementById('lmiCard');
-      const note=document.getElementById('lmiThreshNote');
-      if(v!=null){
-        if(v>=51){card.style.background='#EAF3DE';card.style.borderColor='#3B6D11';note.style.color='#3B6D11';note.textContent='✓ Meets 51% HUD threshold';}
-        else{card.style.background='#FCEBEB';card.style.borderColor='#A32D2D';note.style.color='#A32D2D';note.textContent='✗ Below 51% HUD threshold';}
-      }
-    })();
-    </script>
     <div style="overflow-x:auto"><table class="data-table"><thead><tr>${thead}</tr></thead><tbody id="tableBody">${makeRows(getSorted())}</tbody></table></div>`;
 }
 
