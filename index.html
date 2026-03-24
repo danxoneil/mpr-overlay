@@ -53,11 +53,12 @@ header p{font-family:var(--mono);font-size:11px;color:#888}
 .panel.active{display:flex}
 .map-container{position:relative;flex:1;background:#ddd9d0;min-height:300px}
 .map-container svg{width:100%;height:100%;display:block}
-.map-tip{position:absolute;background:var(--paper);border:var(--border);border-radius:var(--radius);padding:9px 12px;font-size:11px;pointer-events:none;display:none;z-index:20;max-width:220px;box-shadow:0 2px 10px rgba(0,0,0,.14);line-height:1.7}
-.map-tip strong{display:block;font-size:12px;margin-bottom:4px;font-family:var(--mono);border-bottom:var(--border);padding-bottom:4px;margin-bottom:5px}
+.map-tip{position:absolute;background:var(--paper);border:var(--border);border-radius:var(--radius);padding:9px 12px;font-size:11px;pointer-events:none;display:none;z-index:20;max-width:230px;box-shadow:0 2px 10px rgba(0,0,0,.14);line-height:1.7}
+.map-tip strong{display:block;font-size:12px;margin-bottom:4px;font-family:var(--mono);border-bottom:var(--border);padding-bottom:4px}
 .map-tip .tip-row{display:flex;justify-content:space-between;gap:12px;font-size:10px}
 .map-tip .tip-label{color:var(--ink3)}
 .map-tip .tip-val{font-family:var(--mono);font-weight:500;color:var(--ink)}
+.map-tip .tip-section{font-size:9px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;margin-top:5px;margin-bottom:2px;font-family:var(--mono)}
 .map-legend{display:flex;align-items:center;gap:10px;padding:7px 14px;border-top:var(--border);background:var(--paper2);flex-wrap:wrap;flex-shrink:0}
 .legend-label{font-size:10px;color:var(--ink3);font-family:var(--mono)}
 .legend-bar{display:flex;height:8px;border-radius:3px;overflow:hidden;width:100px}
@@ -75,13 +76,12 @@ header p{font-family:var(--mono);font-size:11px;color:#888}
 .data-table th.sorted{color:var(--blue)}
 .data-table td{padding:6px 8px;border-bottom:var(--border);vertical-align:middle;white-space:nowrap}
 .data-table tr:hover td{background:var(--blue-light)}
-.bar-wrap{width:60px;height:5px;background:var(--paper3);border-radius:3px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:5px}
+.bar-wrap{width:50px;height:5px;background:var(--paper3);border-radius:3px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:4px}
 .bar-fill{height:100%;border-radius:3px}
 .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--ink3);gap:10px;font-family:var(--mono);font-size:12px}
 .empty-icon{font-size:32px;opacity:.25}
 .loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px;font-family:var(--mono);font-size:12px;color:var(--ink3)}
 .spinner{width:20px;height:20px;border:2px solid var(--paper3);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite}
-.loading-msg{font-size:11px;color:var(--ink3)}
 @keyframes spin{to{transform:rotate(360deg)}}
 .error-box{background:#fcebeb;border:1px solid #f09595;border-radius:var(--radius);padding:12px 14px;font-size:11px;color:var(--red);font-family:var(--mono);line-height:1.6;margin:16px}
 .copy-btn{padding:4px 10px;border-radius:var(--radius);border:var(--border);background:var(--paper);font-size:10px;cursor:pointer;font-family:var(--mono);color:var(--ink2);float:right}
@@ -108,16 +108,12 @@ header p{font-family:var(--mono);font-size:11px;color:#888}
       <label>Map color metric</label>
       <select class="metric-select" id="metricSelect">
         <option value="income">Median household income</option>
-        <option value="poverty">Poverty rate</option>
+        <option value="poverty">Poverty rate (%)</option>
         <option value="no_internet">No internet access (%)</option>
-        <option value="disability">Disability rate (%)</option>
-        <option value="no_hs">No high school diploma (%)</option>
         <option value="unemployed">Unemployment rate (%)</option>
-        <option value="uninsured">Uninsured rate (%)</option>
         <option value="renter">Renter-occupied housing (%)</option>
         <option value="age65">Population age 65+ (%)</option>
         <option value="nonwhite">Non-white population (%)</option>
-        <optgroup label="── Ethnicity detail ──" disabled></optgroup>
         <option value="aian">American Indian / Alaska Native (%)</option>
         <option value="hispanic">Hispanic or Latino (%)</option>
         <option value="black">Black / African American (%)</option>
@@ -146,7 +142,7 @@ header p{font-family:var(--mono);font-size:11px;color:#888}
       <div class="map-legend" id="mapLegend" style="display:none">
         <span class="legend-label" id="legendTitle">Median HH income</span>
         <div><div class="legend-bar" id="legendBar"></div><div class="legend-ends"><span id="legendLow"></span><span id="legendHigh"></span></div></div>
-        <span style="margin-left:6px;font-size:10px;color:var(--ink3);font-family:var(--mono)">● site &nbsp; ◌ buffer &nbsp; <span style="color:#d4d0c8">■</span> outside range</span>
+        <span style="margin-left:6px;font-size:10px;color:var(--ink3);font-family:var(--mono)">● site &nbsp; ◌ buffer &nbsp; <span style="color:#bbb">■</span> outside range</span>
       </div>
     </div>
     <div class="panel" id="panel-data">
@@ -158,8 +154,7 @@ header p{font-family:var(--mono);font-size:11px;color:#888}
 </div>
 
 <script>
-// ── CONFIG ────────────────────────────────────────────────────────────────────
-const CENSUS_KEY = 'a25d819c5141640da6bd188da09edb9abf19bbb2';
+const CENSUS_KEY = 'YOUR_CENSUS_API_KEY';
 
 const SITES = [
   {id:'tcmsp',  city:'Minneapolis/St. Paul', region:'Twin Cities',      lat:44.9778,lon:-93.2650,calls:['KNOW','KSJN','KCMP'],svcs:['N','C','T'],flagship:true},
@@ -186,24 +181,43 @@ const SITES = [
 const SVC_COLOR={N:'#185FA5',C:'#3B6D11',T:'#BA7517'};
 const REGIONS=[...new Set(SITES.map(s=>s.region))];
 
-// ACS variable codes
-// Variables split into VARS_BATCH1 and VARS_BATCH2 below
+// Single Census API call — 27 data vars + NAME + state + county = 30 total (well under 50 limit)
+const CENSUS_VARS = [
+  'B01003_001E',  // total population
+  'B19013_001E',  // median HH income
+  'B17001_001E',  // poverty universe
+  'B17001_002E',  // below poverty line
+  'B01001_020E','B01001_021E','B01001_022E','B01001_025E',  // male 65+
+  'B01001_044E','B01001_045E','B01001_046E','B01001_049E',  // female 65+
+  'B28002_001E',  // internet universe
+  'B28002_013E',  // no internet access
+  'B23025_003E',  // civilian labor force
+  'B23025_005E',  // unemployed
+  'B25003_001E',  // housing universe
+  'B25003_003E',  // renter occupied
+  'B03002_001E',  // race/ethnicity universe
+  'B03002_003E',  // White non-Hispanic
+  'B03002_004E',  // Black/AA non-Hispanic
+  'B03002_005E',  // American Indian/Alaska Native non-Hispanic
+  'B03002_006E',  // Asian non-Hispanic
+  'B03002_007E',  // NHPI non-Hispanic
+  'B03002_008E',  // Some other race non-Hispanic
+  'B03002_009E',  // Two or more races non-Hispanic
+  'B03002_012E',  // Hispanic or Latino
+].join(',');
 
 const METRIC_CONFIG = {
-  income:     {label:'Median HH income',    fmt:v=>'$'+Math.round(v).toLocaleString(), scheme:d3.interpolateBlues,   higherIsBetter:true},
-  poverty:    {label:'Poverty rate',        fmt:v=>v.toFixed(1)+'%',                   scheme:d3.interpolateOranges, higherIsBetter:false},
-  no_internet:{label:'No internet (%)',     fmt:v=>v.toFixed(1)+'%',                   scheme:d3.interpolateReds,    higherIsBetter:false},
-  disability: {label:'Disability rate (%)', fmt:v=>v.toFixed(1)+'%',                   scheme:d3.interpolatePurples, higherIsBetter:false},
-  no_hs:      {label:'No HS diploma (%)',   fmt:v=>v.toFixed(1)+'%',                   scheme:d3.interpolateOranges, higherIsBetter:false},
-  unemployed: {label:'Unemployment rate (%)',fmt:v=>v.toFixed(1)+'%',                  scheme:d3.interpolateReds,    higherIsBetter:false},
-  uninsured:  {label:'Uninsured rate (%)',  fmt:v=>v.toFixed(1)+'%',                   scheme:d3.interpolateReds,    higherIsBetter:false},
-  renter:     {label:'Renter-occupied (%)', fmt:v=>v.toFixed(1)+'%',                   scheme:d3.interpolatePurples, higherIsBetter:false},
-  age65:      {label:'Age 65+ (%)',         fmt:v=>v.toFixed(1)+'%',                   scheme:d3.interpolateGreens,  higherIsBetter:false},
-  nonwhite:   {label:'Non-white pop. (%)',  fmt:v=>v.toFixed(1)+'%',                   scheme:d3.interpolatePurples, higherIsBetter:false},
-  aian:       {label:'American Indian/Alaska Native (%)', fmt:v=>v.toFixed(2)+'%', scheme:d3.interpolateOranges, higherIsBetter:false},
-  hispanic:   {label:'Hispanic or Latino (%)', fmt:v=>v.toFixed(1)+'%',            scheme:d3.interpolateGreens,  higherIsBetter:false},
-  black:      {label:'Black/African American (%)', fmt:v=>v.toFixed(1)+'%',        scheme:d3.interpolatePurples, higherIsBetter:false},
-  asian:      {label:'Asian (%)',                  fmt:v=>v.toFixed(1)+'%',        scheme:d3.interpolateBlues,   higherIsBetter:false},
+  income:    {label:'Median HH income',           fmt:v=>'$'+Math.round(v).toLocaleString(), scheme:d3.interpolateBlues},
+  poverty:   {label:'Poverty rate (%)',            fmt:v=>v.toFixed(1)+'%',                  scheme:d3.interpolateOranges},
+  no_internet:{label:'No internet access (%)',     fmt:v=>v.toFixed(1)+'%',                  scheme:d3.interpolateReds},
+  unemployed:{label:'Unemployment rate (%)',       fmt:v=>v.toFixed(1)+'%',                  scheme:d3.interpolateReds},
+  renter:    {label:'Renter-occupied (%)',         fmt:v=>v.toFixed(1)+'%',                  scheme:d3.interpolatePurples},
+  age65:     {label:'Population age 65+ (%)',      fmt:v=>v.toFixed(1)+'%',                  scheme:d3.interpolateGreens},
+  nonwhite:  {label:'Non-white population (%)',    fmt:v=>v.toFixed(1)+'%',                  scheme:d3.interpolatePurples},
+  aian:      {label:'Amer. Indian/Alaska Native (%)',fmt:v=>v.toFixed(2)+'%',               scheme:d3.interpolateOranges},
+  hispanic:  {label:'Hispanic or Latino (%)',      fmt:v=>v.toFixed(1)+'%',                  scheme:d3.interpolateGreens},
+  black:     {label:'Black/African American (%)',  fmt:v=>v.toFixed(1)+'%',                  scheme:d3.interpolatePurples},
+  asian:     {label:'Asian (%)',                   fmt:v=>v.toFixed(1)+'%',                  scheme:d3.interpolateBlues},
 };
 
 const MN_COUNTY_CENTROIDS={
@@ -225,10 +239,8 @@ const MN_COUNTY_CENTROIDS={
   '123':[48.2,-95.4],'125':[45.3,-93.3],'127':[44.8,-93.1],
 };
 
-// ── STATE ─────────────────────────────────────────────────────────────────────
 let selected=new Set(), bufferMiles=30, lastResults=null, sortCol='income', sortDir=-1;
 
-// ── SIDEBAR ───────────────────────────────────────────────────────────────────
 function buildSidebar(){
   const el=document.getElementById('sitesList'); el.innerHTML='';
   REGIONS.forEach(region=>{
@@ -247,24 +259,14 @@ function buildSidebar(){
     el.appendChild(grp);
   });
 }
-function toggleSite(id,checked){
-  checked?selected.add(id):selected.delete(id);
-  const el=document.getElementById('item-'+id);
-  if(el){el.className='site-item'+(checked?' checked':'');}
-  updateCount();
-}
+function toggleSite(id,checked){checked?selected.add(id):selected.delete(id);const el=document.getElementById('item-'+id);if(el)el.className='site-item'+(checked?' checked':'');updateCount();}
 function updateCount(){document.getElementById('siteCount').textContent=`${selected.size} site${selected.size!==1?'s':''} selected`;}
 function selectAll(){SITES.forEach(s=>{selected.add(s.id);const el=document.getElementById('item-'+s.id);if(el){el.className='site-item checked';el.querySelector('input').checked=true;}});updateCount();}
 function clearAll(){SITES.forEach(s=>{selected.delete(s.id);const el=document.getElementById('item-'+s.id);if(el){el.className='site-item';el.querySelector('input').checked=false;}});updateCount();}
 document.getElementById('bufferRange').addEventListener('input',function(){bufferMiles=+this.value;document.getElementById('bufferVal').textContent=bufferMiles+' mi';});
-document.getElementById('metricSelect').addEventListener('change',function(){if(lastResults)redrawMap(SITES.filter(s=>selected.has(s.id)),lastResults);});
+document.getElementById('metricSelect').addEventListener('change',()=>{if(lastResults)redrawMap(SITES.filter(s=>selected.has(s.id)),lastResults);});
+function showTab(t){document.querySelectorAll('.tab').forEach((x,i)=>x.classList.toggle('active',['map','data'][i]===t));document.querySelectorAll('.panel').forEach((x,i)=>x.classList.toggle('active',['panel-map','panel-data'][i]==='panel-'+t));}
 
-function showTab(tab){
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['map','data'][i]===tab));
-  document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',['panel-map','panel-data'][i]==='panel-'+tab));
-}
-
-// ── CENSUS FETCH ──────────────────────────────────────────────────────────────
 function pointInCircle(lat,lon,cLat,cLon,mi){
   const R=3958.8,dLa=(lat-cLat)*Math.PI/180,dLo=(lon-cLon)*Math.PI/180;
   const a=Math.sin(dLa/2)**2+Math.cos(cLat*Math.PI/180)*Math.cos(lat*Math.PI/180)*Math.sin(dLo/2)**2;
@@ -272,212 +274,127 @@ function pointInCircle(lat,lon,cLat,cLon,mi){
 }
 function milesToDeg(m){return m/69;}
 
-// Split into two batches — Census API hard limit is 50 variables per call
-// Batch 1 (47 vars + NAME + state + county = 50): pop, income, poverty, age, internet, disability
-const VARS_BATCH1 = [
-  'B01003_001E','B19013_001E',
-  'B17001_001E','B17001_002E',
-  'B01001_001E',
-  'B01001_020E','B01001_021E','B01001_022E','B01001_023E','B01001_024E','B01001_025E',
-  'B01001_044E','B01001_045E','B01001_046E','B01001_047E','B01001_048E','B01001_049E',
-  'B28002_001E','B28002_013E',
-  'B18101_001E',
-  'B18101_004E','B18101_007E','B18101_010E','B18101_013E','B18101_016E','B18101_019E',
-  'B18101_023E','B18101_026E','B18101_029E','B18101_032E','B18101_035E','B18101_038E',
-];
-// Batch 2 (28 vars + NAME + state + county = 31): education, labor, insurance, housing, race
-const VARS_BATCH2 = [
-  'B15003_001E',
-  'B15003_002E','B15003_003E','B15003_004E','B15003_005E','B15003_006E','B15003_007E',
-  'B15003_008E','B15003_009E','B15003_010E','B15003_011E','B15003_012E','B15003_013E',
-  'B15003_014E','B15003_015E','B15003_016E',
-  'B23025_001E','B23025_005E',
-  'B27010_001E','B27010_017E','B27010_033E','B27010_050E','B27010_066E',
-  'B25003_001E','B25003_003E',
-  'B03002_001E','B03002_003E','B03002_004E','B03002_005E',
-  'B03002_006E','B03002_012E',
-];
-
-function parseRow(row, headers){
-  function g(name){const i=headers.indexOf(name);return i>=0?parseFloat(row[i])||0:0;}
-  return {_g:g};
-}
-
-async function censusCall(vars){
-  const url=`https://api.census.gov/data/2022/acs/acs5?get=NAME,${vars.join(',')}&for=county:*&in=state:27&key=${CENSUS_KEY}`;
+async function fetchCensusData(selectedSites,radiusMi){
+  const url=`https://api.census.gov/data/2022/acs/acs5?get=NAME,${CENSUS_VARS}&for=county:*&in=state:27&key=${CENSUS_KEY}`;
   const resp=await fetch(url);
   if(!resp.ok){const txt=await resp.text();throw new Error(`Census API ${resp.status}: ${txt.slice(0,200)}`);}
-  return resp.json();
-}
-
-async function fetchCensusData(selectedSites,radiusMi){
-  // Fire both calls in parallel
-  const [raw1, raw2] = await Promise.all([censusCall(VARS_BATCH1), censusCall(VARS_BATCH2)]);
-
-  const h1=raw1[0], h2=raw2[0];
-  const countyI=h1.indexOf('county');
-  const nameI=h1.indexOf('NAME');
-
-  // Index batch2 by fips for quick lookup
-  const b2map={};
-  raw2.slice(1).forEach(row=>{
-    const fips=row[h2.indexOf('county')];
-    b2map[fips]=row;
-  });
-
+  const raw=await resp.json();
+  const h=raw[0];
+  function idx(v){return h.indexOf(v);}
   const results=[];
-  raw1.slice(1).forEach(row=>{
-    const fips=row[countyI];
-    const name=row[nameI].replace(', Minnesota','');
+  raw.slice(1).forEach(row=>{
+    function g(v){const i=idx(v);return i>=0?parseFloat(row[i])||0:0;}
+    const fips=row[idx('county')];
+    const name=row[idx('NAME')].replace(', Minnesota','');
     const centroid=MN_COUNTY_CENTROIDS[fips];
     if(!centroid)return;
-    const [cLat,cLon]=centroid;
-    const matchedSites=selectedSites.filter(s=>pointInCircle(cLat,cLon,s.lat,s.lon,radiusMi));
-    if(matchedSites.length===0)return;
-
-    function g1(v){const i=h1.indexOf(v);return i>=0?parseFloat(row[i])||0:0;}
-    const row2=b2map[fips]||[];
-    function g2(v){const i=h2.indexOf(v);return i>=0?parseFloat(row2[i])||0:0;}
-
-    const pop=g1('B01003_001E');
-    const income=g1('B19013_001E');
-    const pov_u=g1('B17001_001E'), pov_b=g1('B17001_002E');
-    const m65=g1('B01001_020E')+g1('B01001_021E')+g1('B01001_022E')+g1('B01001_023E')+g1('B01001_024E')+g1('B01001_025E');
-    const f65=g1('B01001_044E')+g1('B01001_045E')+g1('B01001_046E')+g1('B01001_047E')+g1('B01001_048E')+g1('B01001_049E');
-    const internet_u=g1('B28002_001E'), no_internet=g1('B28002_013E');
-    const dis_u=g1('B18101_001E');
-    const dis_m=g1('B18101_004E')+g1('B18101_007E')+g1('B18101_010E')+g1('B18101_013E')+g1('B18101_016E')+g1('B18101_019E');
-    const dis_f=g1('B18101_023E')+g1('B18101_026E')+g1('B18101_029E')+g1('B18101_032E')+g1('B18101_035E')+g1('B18101_038E');
-
-    const edu_u=g2('B15003_001E');
-    const no_hs=['B15003_002E','B15003_003E','B15003_004E','B15003_005E','B15003_006E','B15003_007E','B15003_008E','B15003_009E','B15003_010E','B15003_011E','B15003_012E','B15003_013E','B15003_014E','B15003_015E','B15003_016E'].reduce((s,v)=>s+g2(v),0);
-    const labor_u=g2('B23025_001E'), unemployed=g2('B23025_005E');
-    const ins_u=g2('B27010_001E');
-    const uninsured=g2('B27010_017E')+g2('B27010_033E')+g2('B27010_050E')+g2('B27010_066E');
-    const housing_u=g2('B25003_001E'), renter=g2('B25003_003E');
-    const race_u=g2('B03002_001E'), white_nh=g2('B03002_003E');
-    const black_nh=g2('B03002_004E'), aian_nh=g2('B03002_005E');
-    const asian_nh=g2('B03002_006E'), hispanic=g2('B03002_012E');
-
+    const matchedSites=selectedSites.filter(s=>pointInCircle(centroid[0],centroid[1],s.lat,s.lon,radiusMi));
+    if(!matchedSites.length)return;
+    const pop=g('B01003_001E');
+    const race_u=g('B03002_001E'), white_nh=g('B03002_003E');
+    const m65=g('B01001_020E')+g('B01001_021E')+g('B01001_022E')+g('B01001_025E');
+    const f65=g('B01001_044E')+g('B01001_045E')+g('B01001_046E')+g('B01001_049E');
+    const pov_u=g('B17001_001E');
     results.push({
       name, fips, sites:matchedSites.map(s=>s.city),
-      pop: Math.round(pop),
-      income: income>0?income:null,
-      poverty:    pov_u>0?pov_b/pov_u*100:null,
-      age65:      pop>0?(m65+f65)/pop*100:null,
-      no_internet:internet_u>0?no_internet/internet_u*100:null,
-      disability: dis_u>0?(dis_m+dis_f)/dis_u*100:null,
-      no_hs:      edu_u>0?no_hs/edu_u*100:null,
-      unemployed: labor_u>0?unemployed/labor_u*100:null,
-      uninsured:  ins_u>0?uninsured/ins_u*100:null,
-      renter:     housing_u>0?renter/housing_u*100:null,
-      nonwhite:   race_u>0?(race_u-white_nh)/race_u*100:null,
-      aian:       race_u>0?aian_nh/race_u*100:null,
-      hispanic:   race_u>0?hispanic/race_u*100:null,
-      black:      race_u>0?black_nh/race_u*100:null,
-      asian:      race_u>0?asian_nh/race_u*100:null,
+      pop:          Math.round(pop),
+      income:       g('B19013_001E')||null,
+      poverty:      pov_u>0?g('B17001_002E')/pov_u*100:null,
+      age65:        pop>0?(m65+f65)/pop*100:null,
+      no_internet:  g('B28002_001E')>0?g('B28002_013E')/g('B28002_001E')*100:null,
+      unemployed:   g('B23025_003E')>0?g('B23025_005E')/g('B23025_003E')*100:null,
+      renter:       g('B25003_001E')>0?g('B25003_003E')/g('B25003_001E')*100:null,
+      nonwhite:     race_u>0?(race_u-white_nh)/race_u*100:null,
+      aian:         race_u>0?g('B03002_005E')/race_u*100:null,
+      hispanic:     race_u>0?g('B03002_012E')/race_u*100:null,
+      black:        race_u>0?g('B03002_004E')/race_u*100:null,
+      asian:        race_u>0?g('B03002_006E')/race_u*100:null,
     });
   });
   return results;
 }
 
-// ── ANALYSIS RUNNER ───────────────────────────────────────────────────────────
 async function runAnalysis(){
-  if(selected.size===0){alert('Please select at least one site.');return;}
+  if(!selected.size){alert('Please select at least one site.');return;}
   const selectedSites=SITES.filter(s=>selected.has(s.id));
   showTab('map');
   document.getElementById('mapEmpty').style.display='none';
   document.getElementById('mapSvg').style.display='none';
   document.getElementById('mapLegend').style.display='none';
   const container=document.getElementById('mapContainer');
-  let loadDiv=document.getElementById('mapLoading');
-  if(!loadDiv){loadDiv=document.createElement('div');loadDiv.id='mapLoading';loadDiv.className='loading-state';loadDiv.innerHTML='<div class="spinner"></div><div class="loading-msg">Fetching Census ACS 2022 data…</div>';container.appendChild(loadDiv);}
-  loadDiv.style.display='flex';
-  document.getElementById('dataContent').innerHTML='<div class="loading-state" style="height:200px"><div class="spinner"></div><div class="loading-msg">Loading…</div></div>';
+  let ld=document.getElementById('mapLoading');
+  if(!ld){ld=document.createElement('div');ld.id='mapLoading';ld.className='loading-state';ld.innerHTML='<div class="spinner"></div><span style="font-size:11px">Fetching Census ACS 2022 data…</span>';container.appendChild(ld);}
+  ld.style.display='flex';
+  document.getElementById('dataContent').innerHTML='<div class="loading-state" style="height:200px"><div class="spinner"></div></div>';
   try{
-    const countyData=await fetchCensusData(selectedSites,bufferMiles);
-    lastResults=countyData;
-    loadDiv.style.display='none';
-    redrawMap(selectedSites,countyData);
-    renderTable(selectedSites,countyData);
+    const data=await fetchCensusData(selectedSites,bufferMiles);
+    lastResults=data; ld.style.display='none';
+    redrawMap(selectedSites,data);
+    renderTable(selectedSites,data);
   }catch(e){
-    loadDiv.style.display='none';
+    ld.style.display='none';
     document.getElementById('mapEmpty').style.display='flex';
-    document.getElementById('mapEmpty').innerHTML=`<div class="empty-icon" style="font-size:22px;opacity:.4">!</div><div style="color:#A32D2D;font-family:var(--mono);font-size:11px;text-align:center;max-width:280px">Census API error:<br>${e.message}</div>`;
-    document.getElementById('dataContent').innerHTML=`<div class="error-box">Census API error: ${e.message}</div>`;
+    document.getElementById('mapEmpty').innerHTML=`<div style="font-size:22px;opacity:.3">!</div><div style="color:#A32D2D;font-family:var(--mono);font-size:11px;text-align:center;max-width:300px">${e.message}</div>`;
+    document.getElementById('dataContent').innerHTML=`<div class="error-box">${e.message}</div>`;
   }
 }
 
-// ── MAP ───────────────────────────────────────────────────────────────────────
-function redrawMap(selectedSites,countyData){
-  const metricKey=document.getElementById('metricSelect').value;
-  const mc=METRIC_CONFIG[metricKey];
-  const svgEl=document.getElementById('mapSvg');
-  svgEl.style.display='block';
+function redrawMap(selectedSites,data){
+  const mk=document.getElementById('metricSelect').value;
+  const mc=METRIC_CONFIG[mk];
+  const svgEl=document.getElementById('mapSvg'); svgEl.style.display='block';
   const container=document.getElementById('mapContainer');
-  const W=container.offsetWidth||700,H=container.offsetHeight||440;
+  const W=container.offsetWidth||700, H=container.offsetHeight||440;
   svgEl.setAttribute('viewBox',`0 0 ${W} ${H}`);
   const svg=d3.select('#mapSvg'); svg.selectAll('*').remove();
   const proj=d3.geoMercator().center([-93.0,46.2]).scale(3800*(W/740)).translate([W/2,H/2]);
   const path=d3.geoPath(proj);
-  const vals=countyData.map(c=>c[metricKey]).filter(v=>v!=null);
+  const vals=data.map(c=>c[mk]).filter(v=>v!=null);
   const vMin=d3.min(vals)||0, vMax=d3.max(vals)||1;
   const colorScale=d3.scaleSequential([vMin,vMax],mc.scheme);
-
   d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json').then(us=>{
-    const features=topojson.feature(us,us.objects.counties).features;
-    const mnFeatures=features.filter(f=>String(f.id).padStart(5,'0').startsWith('27'));
-    svg.selectAll('.county').data(mnFeatures).join('path')
-      .attr('d',path)
-      .attr('fill',d=>{const fips=String(d.id).padStart(5,'0').slice(2);const cd=countyData.find(c=>c.fips===fips);return cd&&cd[metricKey]!=null?colorScale(cd[metricKey]):'#d4d0c8';})
+    const mnF=topojson.feature(us,us.objects.counties).features.filter(f=>String(f.id).padStart(5,'0').startsWith('27'));
+    svg.selectAll('.co').data(mnF).join('path').attr('d',path)
+      .attr('fill',d=>{const fips=String(d.id).padStart(5,'0').slice(2);const cd=data.find(c=>c.fips===fips);return cd&&cd[mk]!=null?colorScale(cd[mk]):'#d4d0c8';})
       .attr('stroke','#fff').attr('stroke-width',0.5)
       .on('mousemove',function(e,d){
         const fips=String(d.id).padStart(5,'0').slice(2);
-        const cd=countyData.find(c=>c.fips===fips);
-        if(!cd)return;
+        const cd=data.find(c=>c.fips===fips); if(!cd)return;
         const tip=document.getElementById('mapTip');
         tip.style.display='block';
-        const mx=e.offsetX,my=e.offsetY;
-        tip.style.left=Math.min(mx+14,W-230)+'px';
-        tip.style.top=Math.max(my-10,4)+'px';
-        const rows=[
-          ['Population',cd.pop.toLocaleString()],
-          ['Median income',cd.income!=null?'$'+Math.round(cd.income).toLocaleString():'—'],
-          ['Poverty rate',cd.poverty!=null?cd.poverty.toFixed(1)+'%':'—'],
-          ['No internet',cd.no_internet!=null?cd.no_internet.toFixed(1)+'%':'—'],
-          ['Disability',cd.disability!=null?cd.disability.toFixed(1)+'%':'—'],
-          ['No HS diploma',cd.no_hs!=null?cd.no_hs.toFixed(1)+'%':'—'],
-          ['Unemployed',cd.unemployed!=null?cd.unemployed.toFixed(1)+'%':'—'],
-          ['Uninsured',cd.uninsured!=null?cd.uninsured.toFixed(1)+'%':'—'],
-          ['Renter-occ.',cd.renter!=null?cd.renter.toFixed(1)+'%':'—'],
-          ['Age 65+',cd.age65!=null?cd.age65.toFixed(1)+'%':'—'],
-          ['Non-white',cd.nonwhite!=null?cd.nonwhite.toFixed(1)+'%':'—'],
-          ['AIAN',cd.aian!=null?cd.aian.toFixed(2)+'%':'—'],
-          ['Hispanic/Latino',cd.hispanic!=null?cd.hispanic.toFixed(1)+'%':'—'],
-          ['Black/AA',cd.black!=null?cd.black.toFixed(1)+'%':'—'],
-          ['Asian',cd.asian!=null?cd.asian.toFixed(1)+'%':'—'],
-        ].map(([l,v])=>`<div class="tip-row"><span class="tip-label">${l}</span><span class="tip-val">${v}</span></div>`).join('');
-        tip.innerHTML=`<strong>${cd.name} County</strong>${rows}<div style="margin-top:5px;font-size:9px;color:var(--ink3)">${cd.sites.join(', ')}</div>`;
+        tip.style.left=Math.min(e.offsetX+14,W-240)+'px';
+        tip.style.top=Math.max(e.offsetY-10,4)+'px';
+        const fmt=(v,fn)=>v!=null?fn(v):'—';
+        tip.innerHTML=`<strong>${cd.name} County</strong>
+          <div class="tip-section">Economic</div>
+          <div class="tip-row"><span class="tip-label">Population</span><span class="tip-val">${cd.pop.toLocaleString()}</span></div>
+          <div class="tip-row"><span class="tip-label">Median income</span><span class="tip-val">${fmt(cd.income,v=>'$'+Math.round(v).toLocaleString())}</span></div>
+          <div class="tip-row"><span class="tip-label">Poverty rate</span><span class="tip-val">${fmt(cd.poverty,v=>v.toFixed(1)+'%')}</span></div>
+          <div class="tip-row"><span class="tip-label">Unemployment</span><span class="tip-val">${fmt(cd.unemployed,v=>v.toFixed(1)+'%')}</span></div>
+          <div class="tip-row"><span class="tip-label">No internet</span><span class="tip-val">${fmt(cd.no_internet,v=>v.toFixed(1)+'%')}</span></div>
+          <div class="tip-row"><span class="tip-label">Renter-occ.</span><span class="tip-val">${fmt(cd.renter,v=>v.toFixed(1)+'%')}</span></div>
+          <div class="tip-row"><span class="tip-label">Age 65+</span><span class="tip-val">${fmt(cd.age65,v=>v.toFixed(1)+'%')}</span></div>
+          <div class="tip-section">Race / Ethnicity</div>
+          <div class="tip-row"><span class="tip-label">Non-white</span><span class="tip-val">${fmt(cd.nonwhite,v=>v.toFixed(1)+'%')}</span></div>
+          <div class="tip-row"><span class="tip-label">AIAN</span><span class="tip-val">${fmt(cd.aian,v=>v.toFixed(2)+'%')}</span></div>
+          <div class="tip-row"><span class="tip-label">Hispanic/Latino</span><span class="tip-val">${fmt(cd.hispanic,v=>v.toFixed(1)+'%')}</span></div>
+          <div class="tip-row"><span class="tip-label">Black/AA</span><span class="tip-val">${fmt(cd.black,v=>v.toFixed(1)+'%')}</span></div>
+          <div class="tip-row"><span class="tip-label">Asian</span><span class="tip-val">${fmt(cd.asian,v=>v.toFixed(1)+'%')}</span></div>
+          <div style="margin-top:5px;font-size:9px;color:var(--ink3)">${cd.sites.join(', ')}</div>`;
       })
       .on('mouseleave',()=>{document.getElementById('mapTip').style.display='none';});
-
     selectedSites.forEach(site=>{
       const [cx,cy]=proj([site.lon,site.lat]);
       const r=Math.abs(proj([site.lon+milesToDeg(bufferMiles),site.lat])[0]-cx);
-      svg.append('circle').attr('cx',cx).attr('cy',cy).attr('r',r)
-        .attr('fill','rgba(24,95,165,0.06)').attr('stroke','rgba(24,95,165,0.35)').attr('stroke-width',1).attr('stroke-dasharray','5,3');
+      svg.append('circle').attr('cx',cx).attr('cy',cy).attr('r',r).attr('fill','rgba(24,95,165,0.06)').attr('stroke','rgba(24,95,165,0.35)').attr('stroke-width',1).attr('stroke-dasharray','5,3');
     });
     selectedSites.forEach(site=>{
       const [cx,cy]=proj([site.lon,site.lat]);
-      svg.append('circle').attr('cx',cx).attr('cy',cy).attr('r',site.flagship?9:6)
-        .attr('fill',site.flagship?'#533AB7':'#185FA5').attr('stroke','#fff').attr('stroke-width',2);
-      svg.append('text').attr('x',cx).attr('y',cy-12).attr('text-anchor','middle')
-        .attr('font-size',9).attr('font-family',"'IBM Plex Mono',monospace").attr('fill','#1a1a1a').attr('font-weight',500)
-        .text(site.city.split('/')[0]);
+      svg.append('circle').attr('cx',cx).attr('cy',cy).attr('r',site.flagship?9:6).attr('fill',site.flagship?'#533AB7':'#185FA5').attr('stroke','#fff').attr('stroke-width',2);
+      svg.append('text').attr('x',cx).attr('y',cy-12).attr('text-anchor','middle').attr('font-size',9).attr('font-family',"'IBM Plex Mono',monospace").attr('fill','#1a1a1a').attr('font-weight',500).text(site.city.split('/')[0]);
     });
-
     const bar=document.getElementById('legendBar'); bar.innerHTML='';
-    for(let i=0;i<8;i++){const seg=document.createElement('div');seg.className='legend-seg';seg.style.background=colorScale(vMin+(vMax-vMin)*(i/7));bar.appendChild(seg);}
+    for(let i=0;i<8;i++){const s=document.createElement('div');s.className='legend-seg';s.style.background=colorScale(vMin+(vMax-vMin)*(i/7));bar.appendChild(s);}
     document.getElementById('legendTitle').textContent=mc.label;
     document.getElementById('legendLow').textContent=mc.fmt(vMin);
     document.getElementById('legendHigh').textContent=mc.fmt(vMax);
@@ -485,127 +402,51 @@ function redrawMap(selectedSites,countyData){
   });
 }
 
-// ── TABLE ─────────────────────────────────────────────────────────────────────
-function renderTable(selectedSites,countyData){
-  if(!countyData.length){document.getElementById('dataContent').innerHTML='<div class="empty-state"><div class="empty-icon">▦</div><div>No counties in range.</div></div>';return;}
-  const totalPop=countyData.reduce((s,c)=>s+c.pop,0);
-  const avgIncome=countyData.reduce((s,c)=>s+(c.income||0)*c.pop,0)/totalPop;
-  const avgPoverty=countyData.reduce((s,c)=>s+(c.poverty||0)*c.pop,0)/totalPop;
-  const avgNoInternet=countyData.reduce((s,c)=>s+(c.no_internet||0)*c.pop,0)/totalPop;
-
+function renderTable(selectedSites,data){
+  if(!data.length){document.getElementById('dataContent').innerHTML='<div class="empty-state"><div class="empty-icon">▦</div><div>No counties in range.</div></div>';return;}
+  const totalPop=data.reduce((s,c)=>s+c.pop,0);
+  const wavg=(key)=>{const v=data.filter(c=>c[key]!=null);return v.length?v.reduce((s,c)=>s+c[key]*c.pop,0)/v.reduce((s,c)=>s+c.pop,0):null;};
   const cols=[
-    {key:'name',      label:'County',         fmt:v=>v,           sort:true},
-    {key:'income',    label:'Med. Income',     fmt:v=>v!=null?'$'+Math.round(v).toLocaleString():'—', sort:true},
-    {key:'poverty',   label:'Poverty %',       fmt:v=>v!=null?v.toFixed(1)+'%':'—', sort:true, bar:true},
-    {key:'no_internet',label:'No Internet %',  fmt:v=>v!=null?v.toFixed(1)+'%':'—', sort:true, bar:true},
-    {key:'disability',label:'Disability %',    fmt:v=>v!=null?v.toFixed(1)+'%':'—', sort:true, bar:true},
-    {key:'no_hs',     label:'No HS %',         fmt:v=>v!=null?v.toFixed(1)+'%':'—', sort:true, bar:true},
-    {key:'unemployed',label:'Unemp. %',        fmt:v=>v!=null?v.toFixed(1)+'%':'—', sort:true, bar:true},
-    {key:'uninsured', label:'Uninsured %',     fmt:v=>v!=null?v.toFixed(1)+'%':'—', sort:true, bar:true},
-    {key:'renter',    label:'Renter %',        fmt:v=>v!=null?v.toFixed(1)+'%':'—', sort:true, bar:true},
-    {key:'age65',     label:'Age 65+ %',       fmt:v=>v!=null?v.toFixed(1)+'%':'—', sort:true, bar:true},
-    {key:'nonwhite',  label:'Non-white %',     fmt:v=>v!=null?v.toFixed(1)+'%':'—', sort:true, bar:true},
-    {key:'aian',      label:'AIAN %',          fmt:v=>v!=null?v.toFixed(2)+'%':'—', sort:true, bar:true},
-    {key:'hispanic',  label:'Hispanic %',      fmt:v=>v!=null?v.toFixed(1)+'%':'—', sort:true, bar:true},
-    {key:'black',     label:'Black/AA %',      fmt:v=>v!=null?v.toFixed(1)+'%':'—', sort:true, bar:true},
-    {key:'asian',     label:'Asian %',         fmt:v=>v!=null?v.toFixed(1)+'%':'—', sort:true, bar:true},
-    {key:'pop',       label:'Population',      fmt:v=>v.toLocaleString(), sort:true},
-    {key:'sites',     label:'Serving site(s)', fmt:v=>v.join(', '),       sort:false},
+    {key:'name',       label:'County',        fmt:v=>v,                                        sort:true},
+    {key:'income',     label:'Med. Income',   fmt:v=>v?'$'+Math.round(v).toLocaleString():'—', sort:true},
+    {key:'poverty',    label:'Poverty %',     fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
+    {key:'unemployed', label:'Unemp. %',      fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
+    {key:'no_internet',label:'No Internet %', fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
+    {key:'renter',     label:'Renter %',      fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
+    {key:'age65',      label:'Age 65+ %',     fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
+    {key:'nonwhite',   label:'Non-white %',   fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
+    {key:'aian',       label:'AIAN %',        fmt:v=>v!=null?v.toFixed(2)+'%':'—',             sort:true, bar:true},
+    {key:'hispanic',   label:'Hispanic %',    fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
+    {key:'black',      label:'Black/AA %',    fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
+    {key:'asian',      label:'Asian %',       fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
+    {key:'pop',        label:'Population',    fmt:v=>v.toLocaleString(),                        sort:true},
+    {key:'sites',      label:'Sites',         fmt:v=>v.join(', '),                              sort:false},
   ];
-
-  function getSorted(){
-    return [...countyData].sort((a,b)=>{
-      const av=a[sortCol],bv=b[sortCol];
-      if(av==null)return 1;if(bv==null)return -1;
-      if(typeof av==='string')return sortDir*av.localeCompare(bv);
-      return sortDir*(av-bv);
-    });
-  }
-
-  function buildMaxes(){
-    const m={};
-    cols.filter(c=>c.bar).forEach(c=>{m[c.key]=Math.max(...countyData.map(r=>r[c.key]||0));});
-    return m;
-  }
-
-  function renderRows(sorted,maxes){
-    return sorted.map(c=>`<tr>${cols.map(col=>{
-      const v=c[col.key];
-      const fmted=col.fmt(v);
-      if(col.bar&&v!=null&&maxes[col.key]>0){
-        const pct=Math.round(v/maxes[col.key]*100);
-        return `<td><span class="bar-wrap"><span class="bar-fill" style="width:${pct}%;background:#185FA5"></span></span>${fmted}</td>`;
-      }
-      if(col.key==='name')return `<td style="font-weight:500">${fmted}</td>`;
-      return `<td style="font-family:var(--mono);font-size:10px">${fmted}</td>`;
-    }).join('')}</tr>`).join('');
-  }
-
-  function render(){
-    const sorted=getSorted();
-    const maxes=buildMaxes();
-    const thead=cols.map(c=>`<th class="${c.key===sortCol?'sorted':''}" onclick="${c.sort?`sortBy('${c.key}')`:'void(0)'}" style="${c.sort?'':'cursor:default'}">${c.label}${c.key===sortCol?(sortDir>0?' ↑':' ↓'):''}</th>`).join('');
-    document.getElementById('dataContent').innerHTML=`
-      <h3>${selectedSites.length} site${selectedSites.length!==1?'s':''} · ${bufferMiles}-mi buffer · ${countyData.length} counties
-        <button class="copy-btn" onclick="copyTable()">Copy TSV</button>
-      </h3>
-      <div class="summary-cards">
-        <div class="scard"><div class="scard-n">${countyData.length}</div><div class="scard-l">Counties in service area</div></div>
-        <div class="scard"><div class="scard-n">${(totalPop/1000000).toFixed(2)}M</div><div class="scard-l">Total population</div></div>
-        <div class="scard"><div class="scard-n">$${Math.round(avgIncome/1000)}k</div><div class="scard-l">Wtd. avg median income</div></div>
-        <div class="scard"><div class="scard-n">${avgPoverty.toFixed(1)}%</div><div class="scard-l">Wtd. avg poverty rate</div></div>
-      </div>
-      <div style="overflow-x:auto">
-        <table class="data-table" id="resultsTable">
-          <thead><tr>${thead}</tr></thead>
-          <tbody id="tableBody">${renderRows(sorted,maxes)}</tbody>
-        </table>
-      </div>`;
-  }
-
-  window.sortBy=function(key){
-    if(sortCol===key)sortDir*=-1;else{sortCol=key;sortDir=-1;}
-    const sorted=getSorted();
-    const maxes=buildMaxes();
-    const tbody=document.getElementById('tableBody');
-    if(tbody)tbody.innerHTML=renderRows(sorted,maxes);
-    document.querySelectorAll('.data-table th').forEach((th,i)=>{
-      th.className=cols[i].key===sortCol?'sorted':'';
-      th.textContent=cols[i].label+(cols[i].key===sortCol?(sortDir>0?' ↑':' ↓'):'');
-      if(cols[i].sort)th.onclick=()=>sortBy(cols[i].key);
-    });
-  };
-
-  render();
+  const maxes={};
+  cols.filter(c=>c.bar).forEach(c=>{maxes[c.key]=Math.max(...data.map(r=>r[c.key]||0));});
+  function getSorted(){return [...data].sort((a,b)=>{const av=a[sortCol],bv=b[sortCol];if(av==null)return 1;if(bv==null)return -1;return typeof av==='string'?sortDir*av.localeCompare(bv):sortDir*(av-bv);});}
+  function makeRows(sorted){return sorted.map(c=>`<tr>${cols.map(col=>{const v=c[col.key];const f=col.fmt(v);if(col.bar&&v!=null&&maxes[col.key]>0){const p=Math.round(v/maxes[col.key]*100);return `<td><span class="bar-wrap"><span class="bar-fill" style="width:${p}%;background:#185FA5"></span></span>${f}</td>`;}if(col.key==='name')return `<td style="font-weight:500">${f}</td>`;return `<td style="font-family:var(--mono);font-size:10px">${f}</td>`;}).join('')}</tr>`).join('');}
+  window.sortBy=function(key){if(sortCol===key)sortDir*=-1;else{sortCol=key;sortDir=-1;}const tb=document.getElementById('tableBody');if(tb)tb.innerHTML=makeRows(getSorted());document.querySelectorAll('.data-table th').forEach((th,i)=>{const c=cols[i];th.className=c.key===sortCol?'sorted':'';th.innerHTML=c.label+(c.key===sortCol?(sortDir>0?' ↑':' ↓'):'');if(c.sort)th.onclick=()=>sortBy(c.key);});};
+  const thead=cols.map(c=>`<th class="${c.key===sortCol?'sorted':''}" ${c.sort?`onclick="sortBy('${c.key}')"`:''} style="${c.sort?'':'cursor:default'}">${c.label}${c.key===sortCol?(sortDir>0?' ↑':' ↓'):''}</th>`).join('');
+  const wi=wavg('income'), wp=wavg('poverty');
+  document.getElementById('dataContent').innerHTML=`
+    <h3>${selectedSites.length} site${selectedSites.length!==1?'s':''} · ${bufferMiles}-mi buffer · ${data.length} counties
+      <button class="copy-btn" onclick="copyTable()">Copy TSV</button>
+    </h3>
+    <div class="summary-cards">
+      <div class="scard"><div class="scard-n">${data.length}</div><div class="scard-l">Counties in service area</div></div>
+      <div class="scard"><div class="scard-n">${(totalPop/1000000).toFixed(2)}M</div><div class="scard-l">Total population</div></div>
+      <div class="scard"><div class="scard-n">${wi?'$'+Math.round(wi/1000)+'k':'—'}</div><div class="scard-l">Wtd. avg median income</div></div>
+      <div class="scard"><div class="scard-n">${wp?wp.toFixed(1)+'%':'—'}</div><div class="scard-l">Wtd. avg poverty rate</div></div>
+    </div>
+    <div style="overflow-x:auto"><table class="data-table"><thead><tr>${thead}</tr></thead><tbody id="tableBody">${makeRows(getSorted())}</tbody></table></div>`;
 }
 
 window.copyTable=function(){
   if(!lastResults)return;
-  const headers=['County','Med. Income','Poverty %','No Internet %','Disability %','No HS %','Unemp. %','Uninsured %','Renter %','Age 65+ %','Non-white %','AIAN %','Hispanic %','Black/AA %','Asian %','Population','Sites'];
-  const rows=lastResults.map(c=>[
-    c.name,
-    c.income!=null?'$'+Math.round(c.income):'',
-    c.poverty!=null?c.poverty.toFixed(1)+'%':'',
-    c.no_internet!=null?c.no_internet.toFixed(1)+'%':'',
-    c.disability!=null?c.disability.toFixed(1)+'%':'',
-    c.no_hs!=null?c.no_hs.toFixed(1)+'%':'',
-    c.unemployed!=null?c.unemployed.toFixed(1)+'%':'',
-    c.uninsured!=null?c.uninsured.toFixed(1)+'%':'',
-    c.renter!=null?c.renter.toFixed(1)+'%':'',
-    c.age65!=null?c.age65.toFixed(1)+'%':'',
-    c.nonwhite!=null?c.nonwhite.toFixed(1)+'%':'',
-    c.aian!=null?c.aian.toFixed(2)+'%':'',
-    c.hispanic!=null?c.hispanic.toFixed(1)+'%':'',
-    c.black!=null?c.black.toFixed(1)+'%':'',
-    c.asian!=null?c.asian.toFixed(1)+'%':'',
-    c.pop,
-    c.sites.join('; ')
-  ]);
-  const tsv=[headers,...rows].map(r=>r.join('\t')).join('\n');
-  navigator.clipboard.writeText(tsv).then(()=>{
-    const btn=document.querySelector('.copy-btn');
-    if(btn){btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy TSV',1500);}
-  });
+  const headers=['County','Med. Income','Poverty %','Unemp. %','No Internet %','Renter %','Age 65+ %','Non-white %','AIAN %','Hispanic %','Black/AA %','Asian %','Population','Sites'];
+  const rows=lastResults.map(c=>[c.name,c.income?'$'+Math.round(c.income):'',c.poverty?c.poverty.toFixed(1)+'%':'',c.unemployed?c.unemployed.toFixed(1)+'%':'',c.no_internet?c.no_internet.toFixed(1)+'%':'',c.renter?c.renter.toFixed(1)+'%':'',c.age65?c.age65.toFixed(1)+'%':'',c.nonwhite?c.nonwhite.toFixed(1)+'%':'',c.aian?c.aian.toFixed(2)+'%':'',c.hispanic?c.hispanic.toFixed(1)+'%':'',c.black?c.black.toFixed(1)+'%':'',c.asian?c.asian.toFixed(1)+'%':'',c.pop,c.sites.join('; ')]);
+  navigator.clipboard.writeText([headers,...rows].map(r=>r.join('\t')).join('\n')).then(()=>{const b=document.querySelector('.copy-btn');if(b){b.textContent='Copied!';setTimeout(()=>b.textContent='Copy TSV',1500);}});
 };
 
 buildSidebar();
