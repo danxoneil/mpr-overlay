@@ -61,7 +61,7 @@ The Census API caps each request at 50 variables (including NAME, state, and cou
 | Foreign born | B05002 | 2 |
 | Households with no vehicle | B08201 | 2 |
 
-**Recommended approach for the final grant submission:** Once MPR Engineering confirms the exact upgrade target sites (likely a subset of 4–8 locations), run a focused query at the **census tract level** rather than county level. This gives much higher precision — a county like Beltrami (Bemidji) contains both urban and rural tracts with very different demographics. Tract-level data better captures who actually lives within the signal footprint.
+**Recommended approach for the final grant submission:** Once we confirm the exact upgrade target sites, run a focused query at the **census tract level** rather than county level. This gives much higher precision — a county like Beltrami (Bemidji) contains both urban and rural tracts with very different demographics. Tract-level data better captures who actually lives within the signal footprint.
 
 Tract-level call structure:
 ```
@@ -95,6 +95,6 @@ API documentation: [census.gov/data/developers/data-sets/acs-5year.html](https:/
 
 ## Context
 
-Built as a supporting tool for Minnesota Public Radio's FY2027 Congressionally Directed Funding request for Infrastructure & Technology Upgrades, submitted to the offices of Senators Amy Klobuchar and Tina Smith. Deadline: March 27, 2026.
+Built as a supporting tool for Minnesota Public Radio's FY2027 Congressionally Directed Funding request for Infrastructure & Technology Upgrades, submitted to the offices of Senators Amy Klobuchar and Tina Smith. Deadline: March 27, 2026. Source of infrastructure data is mpr.org/listen/stations 
 
 The demographic overlay supports the "Community Impact" and "Project Justification" sections of the application by documenting the underserved populations within MPR's broadcast coverage areas.
