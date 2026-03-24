@@ -574,67 +574,81 @@ function renderTable(selectedSites,data){
   const totalPop=data.reduce((s,c)=>s+c.pop,0);
   const wavg=(key)=>{const v=data.filter(c=>c[key]!=null);return v.length?v.reduce((s,c)=>s+c[key]*c.pop,0)/v.reduce((s,c)=>s+c.pop,0):null;};
   const cols=[
-    {key:'name',       label:'County',        fmt:v=>v,                                        sort:true},
-    {key:'income',     label:'Med. Income',   fmt:v=>v?'$'+Math.round(v).toLocaleString():'—', sort:true},
-    {key:'poverty',    label:'Poverty %',     fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
-    {key:'unemployed', label:'Unemp. %',      fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
-    {key:'no_internet',label:'No Internet %', fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
-    {key:'renter',     label:'Renter %',      fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
-    {key:'age65',      label:'Age 65+ %',     fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
-    {key:'nonwhite',   label:'Non-white %',   fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
-    {key:'aian',       label:'AIAN %',        fmt:v=>v!=null?v.toFixed(2)+'%':'—',             sort:true, bar:true},
-    {key:'hispanic',   label:'Hispanic %',    fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
-    {key:'black',      label:'Black/AA %',    fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
-    {key:'asian',      label:'Asian %',       fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
-    {key:'lmi_pass',   label:'51% Test',       fmt:v=>v,                                        sort:true},
-    {key:'lmi_pct',    label:'LMI % (80% AMI)',fmt:v=>v!=null?v.toFixed(1)+'%':'—',            sort:true, bar:true},
-    {key:'vlmi_pct',   label:'Very LMI % (50%)',fmt:v=>v!=null?v.toFixed(1)+'%':'—',           sort:true, bar:true},
-    {key:'lmi_hh',     label:'LMI Households', fmt:v=>v!=null?v.toLocaleString():'—',          sort:true},
-    {key:'ami80',      label:'80% AMI ($)',    fmt:v=>v?'$'+v.toLocaleString():'—',             sort:true},
-    {key:'pop',        label:'Population',    fmt:v=>v.toLocaleString(),                        sort:true},
-    {key:'sites',      label:'Sites',         fmt:v=>v.join(', '),                              sort:false},
+    {key:'name',       label:'County',          fmt:v=>v,                                         sort:true},
+    {key:'income',     label:'Med. Income',     fmt:v=>v?'$'+Math.round(v).toLocaleString():'—',  sort:true},
+    {key:'poverty',    label:'Poverty %',       fmt:v=>v!=null?v.toFixed(1)+'%':'—',              sort:true, bar:true},
+    {key:'unemployed', label:'Unemp. %',        fmt:v=>v!=null?v.toFixed(1)+'%':'—',              sort:true, bar:true},
+    {key:'no_internet',label:'No Internet %',   fmt:v=>v!=null?v.toFixed(1)+'%':'—',              sort:true, bar:true},
+    {key:'renter',     label:'Renter %',        fmt:v=>v!=null?v.toFixed(1)+'%':'—',              sort:true, bar:true},
+    {key:'age65',      label:'Age 65+ %',       fmt:v=>v!=null?v.toFixed(1)+'%':'—',              sort:true, bar:true},
+    {key:'nonwhite',   label:'Non-white %',     fmt:v=>v!=null?v.toFixed(1)+'%':'—',              sort:true, bar:true},
+    {key:'aian',       label:'AIAN %',          fmt:v=>v!=null?v.toFixed(2)+'%':'—',              sort:true, bar:true},
+    {key:'hispanic',   label:'Hispanic %',      fmt:v=>v!=null?v.toFixed(1)+'%':'—',              sort:true, bar:true},
+    {key:'black',      label:'Black/AA %',      fmt:v=>v!=null?v.toFixed(1)+'%':'—',              sort:true, bar:true},
+    {key:'asian',      label:'Asian %',         fmt:v=>v!=null?v.toFixed(1)+'%':'—',              sort:true, bar:true},
+    {key:'lmi_pass',   label:'51% Test',        fmt:v=>v,                                         sort:true},
+    {key:'lmi_pct',    label:'LMI % (80% AMI)', fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
+    {key:'vlmi_pct',   label:'Very LMI % (50%)',fmt:v=>v!=null?v.toFixed(1)+'%':'—',             sort:true, bar:true},
+    {key:'lmi_hh',     label:'LMI Households',  fmt:v=>v!=null?v.toLocaleString():'—',            sort:true},
+    {key:'ami80',      label:'80% AMI ($)',      fmt:v=>v?'$'+v.toLocaleString():'—',             sort:true},
+    {key:'pop',        label:'Population',      fmt:v=>v.toLocaleString(),                         sort:true},
+    {key:'sites',      label:'Sites',           fmt:v=>v.join(', '),                               sort:false},
   ];
   const maxes={};
   cols.filter(c=>c.bar).forEach(c=>{maxes[c.key]=Math.max(...data.map(r=>r[c.key]||0));});
   function getSorted(){return [...data].sort((a,b)=>{const av=a[sortCol],bv=b[sortCol];if(av==null)return 1;if(bv==null)return -1;return typeof av==='string'?sortDir*av.localeCompare(bv):sortDir*(av-bv);});}
-  function makeRows(sorted){return sorted.map(c=>`<tr>${cols.map(col=>{const v=c[col.key];const f=col.fmt(v);if(col.bar&&v!=null&&maxes[col.key]>0){const p=Math.round(v/maxes[col.key]*100);return `<td><span class="bar-wrap"><span class="bar-fill" style="width:${p}%;background:#185FA5"></span></span>${f}</td>`;}if(col.key==='lmi_pass'){const pass=v&&v.includes('✓');return `<td style="font-weight:600;color:${pass?'#3B6D11':'#A32D2D'};font-family:var(--mono);font-size:10px">${f}</td>`;}
-              if(col.key==='name')return `<td style="font-weight:500">${f}</td>`;return `<td style="font-family:var(--mono);font-size:10px">${f}</td>`;}).join('')}</tr>`).join('');}
-  window.sortBy=function(key){if(sortCol===key)sortDir*=-1;else{sortCol=key;sortDir=-1;}const tb=document.getElementById('tableBody');if(tb)tb.innerHTML=makeRows(getSorted());document.querySelectorAll('.data-table th').forEach((th,i)=>{const c=cols[i];th.className=c.key===sortCol?'sorted':'';th.innerHTML=c.label+(c.key===sortCol?(sortDir>0?' ↑':' ↓'):'');if(c.sort)th.onclick=()=>sortBy(c.key);});};
+  function makeRows(sorted){
+    return sorted.map(c=>`<tr>${cols.map(col=>{
+      const v=c[col.key];
+      const f=col.fmt(v);
+      if(col.key==='lmi_pass'){
+        const pass=v&&v.includes('✓');
+        return `<td style="font-weight:600;color:${pass?'#3B6D11':'#A32D2D'};font-family:var(--mono);font-size:10px">${f}</td>`;
+      }
+      if(col.bar&&v!=null&&maxes[col.key]>0){
+        const p=Math.round(v/maxes[col.key]*100);
+        return `<td><span class="bar-wrap"><span class="bar-fill" style="width:${p}%;background:#185FA5"></span></span>${f}</td>`;
+      }
+      if(col.key==='name')return `<td style="font-weight:500">${f}</td>`;
+      return `<td style="font-family:var(--mono);font-size:10px">${f}</td>`;
+    }).join('')}</tr>`).join('');
+  }
+  window.sortBy=function(key){
+    if(sortCol===key)sortDir*=-1;else{sortCol=key;sortDir=-1;}
+    const tb=document.getElementById('tableBody');
+    if(tb)tb.innerHTML=makeRows(getSorted());
+    document.querySelectorAll('.data-table th').forEach((th,i)=>{
+      const c=cols[i];
+      th.className=c.key===sortCol?'sorted':'';
+      th.innerHTML=c.label+(c.key===sortCol?(sortDir>0?' ↑':' ↓'):'');
+      if(c.sort)th.onclick=()=>sortBy(c.key);
+    });
+  };
   const thead=cols.map(c=>`<th class="${c.key===sortCol?'sorted':''}" ${c.sort?`onclick="sortBy('${c.key}')"`:''} style="${c.sort?'':'cursor:default'}">${c.label}${c.key===sortCol?(sortDir>0?' ↑':' ↓'):''}</th>`).join('');
-  const wi=wavg('income'), wp=wavg('poverty');
+  const wi=wavg('income'), wp=wavg('poverty'), wl=wavg('lmi_pct');
+  const lmiPass=wl!=null&&wl>=51;
+  const lmiBg=wl==null?'var(--paper2)':lmiPass?'#EAF3DE':'#FCEBEB';
+  const lmiBc=wl==null?'#d0cdc5':lmiPass?'#3B6D11':'#A32D2D';
+  const lmiNote=wl==null?'':lmiPass?'<span style="color:#3B6D11;font-size:9px">&#10003; Meets 51% threshold</span>':'<span style="color:#A32D2D;font-size:9px">&#10007; Below 51% threshold</span>';
   document.getElementById('dataContent').innerHTML=`
-    <h3>${selectedSites.length} site${selectedSites.length!==1?'s':''} · ${bufferMiles}-mi buffer · ${data.length} counties
+    <h3>${selectedSites.length} site${selectedSites.length!==1?'s':''} &middot; ${bufferMiles}-mi buffer &middot; ${data.length} counties
       <button class="copy-btn" onclick="copyTable()">Copy TSV</button>
     </h3>
     <div style="background:#E6F1FB;border:1px solid #B5D4F4;border-radius:6px;padding:9px 12px;margin-bottom:12px;font-size:11px;line-height:1.6;font-family:var(--mono)">
-      <strong style="color:#0C447C">HUD CDBG/EDI LMI National Objective — 51% threshold</strong><br>
-      <span style="color:#185FA5">Service Area method:</span> ≥51% of residents in service area must be LMI (below 80% AMI) · 
-      <span style="color:#185FA5">Job Creation method:</span> ≥51% of jobs available to LMI persons · 
-      <span style="color:#185FA5">Limited Clientele:</span> project exclusively serves LMI-qualified group (disabled, homeless, seniors)
+      <strong style="color:#0C447C">HUD CDBG/EDI LMI National Objective &mdash; 51% threshold</strong><br>
+      <span style="color:#185FA5">Service Area:</span> &ge;51% of residents LMI (below 80% AMI) &nbsp;&middot;&nbsp;
+      <span style="color:#185FA5">Job Creation:</span> &ge;51% of jobs available to LMI persons &nbsp;&middot;&nbsp;
+      <span style="color:#185FA5">Limited Clientele:</span> project exclusively serves LMI-qualified group
     </div>
     <div class="summary-cards">
       <div class="scard"><div class="scard-n">${data.length}</div><div class="scard-l">Counties in service area</div></div>
       <div class="scard"><div class="scard-n">${(totalPop/1000000).toFixed(2)}M</div><div class="scard-l">Total population</div></div>
-      <div class="scard"><div class="scard-n">${wi?'$'+Math.round(wi/1000)+'k':'—'}</div><div class="scard-l">Wtd. avg median income</div></div>
-      <div class="scard"><div class="scard-n">${wp?wp.toFixed(1)+'%':'—'}</div><div class="scard-l">Wtd. avg poverty rate</div></div>
-      \${(()=>{
-        const v=wavg('lmi_pct');
-        const pass=v!=null&&v>=51;
-        const bg=v==null?'var(--paper2)':pass?'#EAF3DE':'#FCEBEB';
-        const bc=v==null?'var(--border)':pass?'#3B6D11':'#A32D2D';
-        const note=v==null?'':pass?'<span style="color:#3B6D11;font-size:9px">✓ Meets 51% threshold</span>':'<span style="color:#A32D2D;font-size:9px">✗ Below 51% threshold</span>';
-        return '<div class="scard" style="background:'+bg+';border-color:'+bc+'"><div class="scard-n">'+(v!=null?v.toFixed(1)+'%':'—')+'</div><div class="scard-l">Wtd. avg LMI (80% AMI)<br>'+note+'</div></div>';
-      })()}
+      <div class="scard"><div class="scard-n">${wi?'$'+Math.round(wi/1000)+'k':'&mdash;'}</div><div class="scard-l">Wtd. avg median income</div></div>
+      <div class="scard"><div class="scard-n">${wp?wp.toFixed(1)+'%':'&mdash;'}</div><div class="scard-l">Wtd. avg poverty rate</div></div>
+      <div class="scard" style="background:${lmiBg};border-color:${lmiBc}"><div class="scard-n">${wl?wl.toFixed(1)+'%':'&mdash;'}</div><div class="scard-l">Wtd. avg LMI (80% AMI)<br>${lmiNote}</div></div>
     </div>
     <div style="overflow-x:auto"><table class="data-table"><thead><tr>${thead}</tr></thead><tbody id="tableBody">${makeRows(getSorted())}</tbody></table></div>`;
 }
-
-window.copyTable=function(){
-  if(!lastResults)return;
-  const headers=['County','Med. Income','Poverty %','Unemp. %','No Internet %','Renter %','Age 65+ %','Non-white %','AIAN %','Hispanic %','Black/AA %','Asian %','51% Test','LMI % (80%AMI)','Very LMI % (50%AMI)','LMI Households','80% AMI Threshold','Population','Sites'];
-  const rows=lastResults.map(c=>[c.name,c.income?'$'+Math.round(c.income):'',c.poverty?c.poverty.toFixed(1)+'%':'',c.unemployed?c.unemployed.toFixed(1)+'%':'',c.no_internet?c.no_internet.toFixed(1)+'%':'',c.renter?c.renter.toFixed(1)+'%':'',c.age65?c.age65.toFixed(1)+'%':'',c.nonwhite?c.nonwhite.toFixed(1)+'%':'',c.aian?c.aian.toFixed(2)+'%':'',c.hispanic?c.hispanic.toFixed(1)+'%':'',c.black?c.black.toFixed(1)+'%':'',c.asian?c.asian.toFixed(1)+'%':'',c.lmi_pass||'',c.lmi_pct?c.lmi_pct.toFixed(1)+'%':'',c.vlmi_pct?c.vlmi_pct.toFixed(1)+'%':'',c.lmi_hh||'',c.ami80?'$'+c.ami80:'',c.pop,c.sites.join('; ')]);
-  navigator.clipboard.writeText([headers,...rows].map(r=>r.join('\t')).join('\n')).then(()=>{const b=document.querySelector('.copy-btn');if(b){b.textContent='Copied!';setTimeout(()=>b.textContent='Copy TSV',1500);}});
-};
 
 buildSidebar();
 updateCount();
